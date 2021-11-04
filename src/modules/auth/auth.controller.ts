@@ -4,8 +4,8 @@ import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagg
 import { Roles } from '@src/decorators/roles.decorator';
 import { AuthService } from './auth.service';
 import { LoginDto, LoginResponseDto } from './dto/login.dto';
-import { UserInfoDto } from '../users/dto/user-info.dto';
-import { Role } from '../users/enums/role.enum';
+import { UserInfoDto } from '@src/modules/users/dto/user-info.dto';
+import { Role } from '@src/modules/users/enums/role.enum';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RolesGuard } from './guards/roles.guard';
 import { RegisterDto, RegisterResponseDto } from './dto/register.dto';
