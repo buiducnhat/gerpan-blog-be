@@ -25,9 +25,6 @@ export class ArticleCategory {
   @Column({ type: 'enum', enum: ArticleCategoryLevel })
   level: ArticleCategoryLevel;
 
-  @Column({ length: 100 })
-  slug: string;
-
   @ManyToOne(() => ArticleCategory, (parent) => parent.children, { nullable: true })
   parent: ArticleCategory;
 

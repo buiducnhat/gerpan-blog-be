@@ -20,9 +20,6 @@ export class ArticleTag {
   @Column({ nullable: true })
   content: string;
 
-  @Column({ length: 100 })
-  slug: string;
-
   @ManyToMany(() => Article, (article) => article.tags)
   articles: Article[];
 

@@ -1,11 +1,24 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
 import { CreateArticleTagDto } from './dto/create-article-tag.dto';
 import { UpdateArticleTagDto } from './dto/update-article-tag.dto';
+import { ArticleTag } from './entities/article-tag.entity';
+import { convertDTO, slugify } from '@src/utils/common.util';
 
 @Injectable()
 export class ArticleTagsService {
+  constructor(
+    @InjectRepository(ArticleTag)
+    private articleTagService: Repository<ArticleTag>,
+  ) {}
+
   create(createArticleTagDto: CreateArticleTagDto) {
-    return 'This action adds a new articleTag';
+    const newArticleTag = new ArticleTag();
+    convertDTO(createArticleTagDto, newArticleTag);
+
+    return this.articleTagService.save(newArticleTag);
   }
 
   findAll() {

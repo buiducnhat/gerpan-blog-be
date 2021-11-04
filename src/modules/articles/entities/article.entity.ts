@@ -27,9 +27,6 @@ export class Article {
   @Column({ length: 100 })
   title: string;
 
-  @Column({ length: 255 })
-  slug: string;
-
   @Column({ type: 'tinytext', nullable: true })
   description: string;
 

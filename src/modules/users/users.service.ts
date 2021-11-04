@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-
 import { Repository } from 'typeorm';
-import { SocialDto } from '../auth/dto/social.dto';
+
+import { SocialDto } from '@src/modules/auth/dto/social.dto';
 import { CreateUserDto } from './dto/user-create.dto';
 import { UpdateUserDto } from './dto/user-update.dto';
 import { Social } from './entities/social.entity';

@@ -1,4 +1,13 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateArticleTagDto } from './create-article-tag.dto';
+import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 
-export class UpdateArticleTagDto extends PartialType(CreateArticleTagDto) {}
+export class UpdateArticleTagDto {
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(50)
+  title: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  content?: string;
+}

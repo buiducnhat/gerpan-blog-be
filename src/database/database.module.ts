@@ -5,6 +5,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { IDatabaseConfig } from '@src/configs/database.config';
 import { User } from '@modules/users/entities/user.entity';
 import { Social } from '@modules/users/entities/social.entity';
+import { Article } from '@src/modules/articles/entities/article.entity';
+import { ArticleCategory } from '@src/modules/article-categories/entities/article-category.entity';
+import { ArticleTag } from '@src/modules/article-tags/entities/article-tag.entity';
+import { ArticleComment } from '@src/modules/articlle-comments/entities/articlle-comment.entity';
 
 @Module({
   imports: [
@@ -17,7 +21,7 @@ import { Social } from '@modules/users/entities/social.entity';
         username: configService.get('dbUsername'),
         password: configService.get('dbPassword'),
         database: configService.get('dbName'),
-        entities: [User, Social],
+        entities: [User, Social, Article, ArticleCategory, ArticleTag, ArticleComment],
       }),
       inject: [ConfigService],
     }),
