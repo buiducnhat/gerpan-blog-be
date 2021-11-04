@@ -52,10 +52,9 @@ export class ArticleCategoriesService {
   }
 
   async remove(id: number) {
-    const articleCategory = await this.articleCategoryRepository.findOne(id);
-    if (!articleCategory) {
-      throw new NotFoundException(ARTICLE_CATEGORY_MESSAGES.NOT_FOUND);
-    }
-    return this.articleCategoryRepository.delete(id);
+    const result = await this.articleCategoryRepository.delete(id);
+    if (!result.affected) throw new NotFoundException(ARTICLE_CATEGORY_MESSAGES.NOT_FOUND);
+
+    return result;
   }
 }
