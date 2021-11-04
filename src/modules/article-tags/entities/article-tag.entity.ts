@@ -2,9 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+
+import { Article } from '@src/modules/articles/entities/article.entity';
 
 @Entity()
 export class ArticleTag {
@@ -19,6 +22,9 @@ export class ArticleTag {
 
   @Column({ length: 100 })
   slug: string;
+
+  @ManyToMany(() => Article, (article) => article.tags)
+  articles: Article[];
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP(6)' })
   createdAt: Date;

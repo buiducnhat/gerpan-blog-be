@@ -1,3 +1,5 @@
+import { Article } from '@src/modules/articles/entities/article.entity';
+import { ArticleComment } from '@src/modules/articlle-comments/entities/articlle-comment.entity';
 import { Role } from '@src/modules/users/enums/role.enum';
 import {
   Column,
@@ -52,6 +54,12 @@ export class User {
 
   @DeleteDateColumn()
   deletedAt: Date;
+
+  @OneToMany(() => Article, (article) => article.author)
+  articles: Article[];
+
+  @OneToMany(() => ArticleComment, (articleComment) => articleComment.user)
+  articleComments: ArticleComment[];
 
   @OneToMany(() => Social, (social) => social.user)
   socials: Social[];
