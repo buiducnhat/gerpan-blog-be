@@ -1,6 +1,6 @@
 import { IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
-import { MIN_PASSWORD_LENGTH } from '@src/commons/constants';
+import { MIN_PASSWORD_LENGTH } from '@src/common/constants';
 import { UserInfoDto } from '@modules/users/dto/user-info.dto';
 
 export class RegisterDto {
