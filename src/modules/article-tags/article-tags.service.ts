@@ -2,38 +2,40 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { CreateArticleTagDto } from './dto/create-article-tag.dto';
-import { UpdateArticleTagDto } from './dto/update-article-tag.dto';
+import { CreateArticleTagDto } from './dto/article-tag-create.dto';
+import { UpdateArticleTagDto } from './dto/article-tag-update.dto';
 import { ArticleTag } from './entities/article-tag.entity';
-import { convertDTO, slugify } from '@src/utils/common.util';
+import { convertDTO } from '@src/utils/common.util';
 
 @Injectable()
 export class ArticleTagsService {
   constructor(
     @InjectRepository(ArticleTag)
-    private articleTagService: Repository<ArticleTag>,
+    private articleTagRepository: Repository<ArticleTag>,
   ) {}
 
   create(createArticleTagDto: CreateArticleTagDto) {
     const newArticleTag = new ArticleTag();
     convertDTO(createArticleTagDto, newArticleTag);
 
-    return this.articleTagService.save(newArticleTag);
+    return this.articleTagRepository.save(newArticleTag);
   }
 
   findAll() {
-    return `This action returns all articleTags`;
+    return this.articleTagRepository.find();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} articleTag`;
+    return this.articleTagRepository.findOne(id);
   }
 
-  update(id: number, updateArticleTagDto: UpdateArticleTagDto) {
-    return `This action updates a #${id} articleTag`;
+  async update(id: number, updateArticleTagDto: UpdateArticleTagDto) {
+    const articleTag = await this.articleTagRepository.findOne(id);
+    convertDTO(updateArticleTagDto, articleTag);
+    return this.articleTagRepository.save(articleTag);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} articleTag`;
+    return this.articleTagRepository.delete(id);
   }
 }
