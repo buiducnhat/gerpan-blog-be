@@ -6,7 +6,7 @@ export class BasicArticleCategoryDto extends OmitType(ArticleCategory, [
   'articles',
   'children',
   'parent',
+  'level',
 ] as const) {
-  parent: BasicArticleCategoryDto;
-  children: BasicArticleCategoryDto[];
+  level: number;
 }

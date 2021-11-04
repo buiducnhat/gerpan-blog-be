@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class UnauthorizedDto {
   @ApiProperty({ default: 401 })
-  status: number;
+  statusCode: number;
 
   @ApiProperty({ default: 'Unauthorized' })
   message: string;

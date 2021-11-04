@@ -29,8 +29,10 @@ import { BasicArticleCategoryDto } from './dto/article-category-basic.dto';
 import { ARTICLE_CATEGORY_MESSAGES } from './common/article-categories.constant';
 import {
   MyApiForbiddenResponse,
+  MyApiNotFoundResponse,
   MyApiUnauthorizedResponse,
 } from '@src/decorators/swagger-extend.decorator';
+import { DetailArticleCategoryDto } from './dto/article-category-detail.dto';
 
 @ApiTags('Article Categories')
 @Controller('article-categories')
@@ -60,7 +62,7 @@ export class ArticleCategoriesController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: ARTICLE_CATEGORY_MESSAGES.SUCCESS,
-    type: [BasicArticleCategoryDto],
+    type: [DetailArticleCategoryDto],
   })
   findAll() {
     return this.articleCategoriesService.findAll();
@@ -71,7 +73,7 @@ export class ArticleCategoriesController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: ARTICLE_CATEGORY_MESSAGES.SUCCESS,
-    type: BasicArticleCategoryDto,
+    type: DetailArticleCategoryDto,
   })
   findOne(@Param('id') id: string) {
     return this.articleCategoriesService.findOne(+id);
@@ -89,6 +91,8 @@ export class ArticleCategoriesController {
   })
   @MyApiUnauthorizedResponse()
   @MyApiForbiddenResponse()
+  // @ApiNotFoundResponse({ type: NotFoundResponse })
+  @MyApiNotFoundResponse()
   @ApiBearerAuth()
   @Roles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)

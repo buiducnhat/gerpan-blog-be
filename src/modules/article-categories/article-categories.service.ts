@@ -18,6 +18,7 @@ export class ArticleCategoriesService {
 
   async create(createArticleCategoryDto: CreateArticleCategoryDto) {
     const newArticleCategory = new ArticleCategory();
+    newArticleCategory.children = [];
     convertDTO(_.omit(createArticleCategoryDto, ['parentId']), newArticleCategory);
 
     if (createArticleCategoryDto.parentId) {
@@ -27,6 +28,9 @@ export class ArticleCategoriesService {
       if (!parent) {
         throw new BadRequestException(ARTICLE_CATEGORY_MESSAGES.INVALID_PARENT);
       } else {
+        if (createArticleCategoryDto.level >= parent.level) {
+          throw new BadRequestException(ARTICLE_CATEGORY_MESSAGES.INVALID_PARENT);
+        }
         newArticleCategory.parent = parent;
       }
     }
@@ -35,11 +39,20 @@ export class ArticleCategoriesService {
   }
 
   findAll() {
-    return this.articleCategoryRepository.find();
+    return this.articleCategoryRepository
+      .createQueryBuilder('category')
+      .leftJoinAndSelect('category.parent', 'parent')
+      .leftJoinAndSelect('category.children', 'children')
+      .getMany();
   }
 
   findOne(id: number) {
-    return this.articleCategoryRepository.findOne(id);
+    return this.articleCategoryRepository
+      .createQueryBuilder('category')
+      .leftJoinAndSelect('category.parent', 'parent')
+      .leftJoinAndSelect('category.children', 'children')
+      .where('category.id = :id', { id })
+      .getOne();
   }
 
   async update(id: number, updateArticleCategoryDto: UpdateArticleCategoryDto) {
@@ -52,9 +65,14 @@ export class ArticleCategoriesService {
   }
 
   async remove(id: number) {
-    const result = await this.articleCategoryRepository.delete(id);
-    if (!result.affected) throw new NotFoundException(ARTICLE_CATEGORY_MESSAGES.NOT_FOUND);
+    const articleCategory = await this.findOne(id);
+    if (!articleCategory) {
+      throw new NotFoundException(ARTICLE_CATEGORY_MESSAGES.NOT_FOUND);
+    }
+    if (articleCategory.children.length > 0) {
+      throw new BadRequestException(ARTICLE_CATEGORY_MESSAGES.HAS_CHILDREN_ERROR);
+    }
 
-    return result;
+    return this.articleCategoryRepository.delete(id);
   }
 }

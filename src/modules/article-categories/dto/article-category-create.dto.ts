@@ -14,7 +14,7 @@ export class CreateArticleCategoryDto {
   content?: string;
 
   @IsEnum(ArticleCategoryLevel)
-  level: ArticleCategoryLevel;
+  level: number;
 
   @IsOptional()
   @IsNumber()
