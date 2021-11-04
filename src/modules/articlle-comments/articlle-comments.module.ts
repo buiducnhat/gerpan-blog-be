@@ -4,6 +4,6 @@ import { ArticlleCommentsController } from './articlle-comments.controller';
 
 @Module({
   controllers: [ArticlleCommentsController],
-  providers: [ArticlleCommentsService]
+  providers: [ArticlleCommentsService],
 })
 export class ArticlleCommentsModule {}

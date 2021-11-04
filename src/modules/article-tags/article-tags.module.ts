@@ -4,6 +4,6 @@ import { ArticleTagsController } from './article-tags.controller';
 
 @Module({
   controllers: [ArticleTagsController],
-  providers: [ArticleTagsService]
+  providers: [ArticleTagsService],
 })
 export class ArticleTagsModule {}
