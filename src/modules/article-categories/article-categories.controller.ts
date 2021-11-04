@@ -27,7 +27,10 @@ import { CreateArticleCategoryDto } from './dto/article-category-create.dto';
 import { UpdateArticleCategoryDto } from './dto/article-category-update.dto';
 import { BasicArticleCategoryDto } from './dto/article-category-basic.dto';
 import { ARTICLE_CATEGORY_MESSAGES } from './common/article-categories.constant';
-import { MyApiForbiddenResponse } from '@src/decorators/swagger-extend.decorator';
+import {
+  MyApiForbiddenResponse,
+  MyApiUnauthorizedResponse,
+} from '@src/decorators/swagger-extend.decorator';
 
 @ApiTags('Article Categories')
 @Controller('article-categories')
@@ -43,6 +46,7 @@ export class ArticleCategoriesController {
     description: ARTICLE_CATEGORY_MESSAGES.SUCCESS,
     type: BasicArticleCategoryDto,
   })
+  @MyApiUnauthorizedResponse()
   @MyApiForbiddenResponse()
   @ApiBearerAuth()
   @Roles(UserRole.ADMIN)
@@ -83,6 +87,7 @@ export class ArticleCategoriesController {
     description: ARTICLE_CATEGORY_MESSAGES.SUCCESS,
     type: BasicArticleCategoryDto,
   })
+  @MyApiUnauthorizedResponse()
   @MyApiForbiddenResponse()
   @ApiBearerAuth()
   @Roles(UserRole.ADMIN)
@@ -103,6 +108,7 @@ export class ArticleCategoriesController {
     status: HttpStatus.OK,
     description: ARTICLE_CATEGORY_MESSAGES.SUCCESS,
   })
+  @MyApiUnauthorizedResponse()
   @MyApiForbiddenResponse()
   @ApiBearerAuth()
   @Roles(UserRole.ADMIN)

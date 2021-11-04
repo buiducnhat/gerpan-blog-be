@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, NotFoundException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as _ from 'lodash';
@@ -7,6 +7,7 @@ import { CreateArticleCategoryDto } from './dto/article-category-create.dto';
 import { UpdateArticleCategoryDto } from './dto/article-category-update.dto';
 import { ArticleCategory } from './entities/article-category.entity';
 import { convertDTO } from '@src/utils/common.util';
+import { ARTICLE_CATEGORY_MESSAGES } from './common/article-categories.constant';
 
 @Injectable()
 export class ArticleCategoriesService {
@@ -24,7 +25,7 @@ export class ArticleCategoriesService {
         createArticleCategoryDto.parentId,
       );
       if (!parent) {
-        throw new BadRequestException('Invalid parent category');
+        throw new BadRequestException(ARTICLE_CATEGORY_MESSAGES.INVALID_PARENT);
       } else {
         newArticleCategory.parent = parent;
       }
@@ -43,11 +44,18 @@ export class ArticleCategoriesService {
 
   async update(id: number, updateArticleCategoryDto: UpdateArticleCategoryDto) {
     const articleCategory = await this.articleCategoryRepository.findOne(id);
+    if (!articleCategory) {
+      throw new NotFoundException(ARTICLE_CATEGORY_MESSAGES.NOT_FOUND);
+    }
     convertDTO(updateArticleCategoryDto, articleCategory);
     return this.articleCategoryRepository.save(articleCategory);
   }
 
-  remove(id: number) {
+  async remove(id: number) {
+    const articleCategory = await this.articleCategoryRepository.findOne(id);
+    if (!articleCategory) {
+      throw new NotFoundException(ARTICLE_CATEGORY_MESSAGES.NOT_FOUND);
+    }
     return this.articleCategoryRepository.delete(id);
   }
 }
