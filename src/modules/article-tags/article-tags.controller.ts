@@ -10,7 +10,13 @@ import {
   HttpStatus,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { Roles } from '@src/decorators/roles.decorator';
 import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';
@@ -21,6 +27,7 @@ import { CreateArticleTagDto } from './dto/article-tag-create.dto';
 import { UpdateArticleTagDto } from './dto/article-tag-update.dto';
 import { BasicArticleTagDto } from './dto/article-tag-basic.dto';
 import { ARTICLE_TAGS_MESSAGES } from './common/article-tags.contants';
+import { MyApiForbiddenResponse } from '@src/decorators/swagger-extend.decorator';
 
 @ApiTags('Article Tags')
 @Controller('article-tags')
@@ -32,11 +39,8 @@ export class ArticleTagsController {
     summary: 'Create article tag',
     description: 'Create article tag (required admin permission)',
   })
-  @ApiResponse({
-    status: HttpStatus.CREATED,
-    description: ARTICLE_TAGS_MESSAGES.SUCCESS,
-    type: BasicArticleTagDto,
-  })
+  @ApiCreatedResponse({ description: ARTICLE_TAGS_MESSAGES.SUCCESS, type: BasicArticleTagDto })
+  @MyApiForbiddenResponse()
   @ApiBearerAuth()
   @Roles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -76,6 +80,7 @@ export class ArticleTagsController {
     description: ARTICLE_TAGS_MESSAGES.SUCCESS,
     type: BasicArticleTagDto,
   })
+  @MyApiForbiddenResponse()
   @ApiBearerAuth()
   @Roles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -95,6 +100,7 @@ export class ArticleTagsController {
     status: HttpStatus.OK,
     description: ARTICLE_TAGS_MESSAGES.SUCCESS,
   })
+  @MyApiForbiddenResponse()
   @ApiBearerAuth()
   @Roles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)

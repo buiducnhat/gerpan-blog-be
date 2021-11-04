@@ -5,7 +5,6 @@ import {
   ApiOperation,
   ApiResponse,
   ApiTags,
-  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 
 import { Roles } from '@src/decorators/roles.decorator';
@@ -22,7 +21,7 @@ import { FacebookAuthGuard } from './guards/facebook-auth.guard';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
 import { IRequestUser } from './interfaces/req-user.interface';
 import { AUTH_MESSAGE } from './common/auth.constant';
-import { UnauthorizedDto } from './dto/unauthorized.dto';
+import { MyApiUnauthorizedResponse } from '@src/decorators/swagger-extend.decorator';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -32,7 +31,7 @@ export class AuthController {
   @Post('/login')
   @ApiOperation({ summary: 'Login' })
   @ApiCreatedResponse({ type: LoginResponseDto, description: AUTH_MESSAGE.SUCCESS })
-  @ApiUnauthorizedResponse({ type: UnauthorizedDto })
+  @MyApiUnauthorizedResponse()
   async login(@Body(new ValidationPipe()) loginDto: LoginDto): Promise<LoginResponseDto> {
     return this.authService.login(loginDto);
   }
