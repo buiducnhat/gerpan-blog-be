@@ -15,7 +15,7 @@ import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagg
 import { Roles } from '@src/decorators/roles.decorator';
 import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from '@modules/auth/guards/roles.guard';
-import { Role } from '@modules/users/enums/role.enum';
+import { UserRole } from '@modules/users/enums/role.enum';
 import { ArticleTagsService } from './article-tags.service';
 import { CreateArticleTagDto } from './dto/article-tag-create.dto';
 import { UpdateArticleTagDto } from './dto/article-tag-update.dto';
@@ -38,7 +38,7 @@ export class ArticleTagsController {
     type: BasicArticleTagDto,
   })
   @ApiBearerAuth()
-  @Roles(Role.ADMIN)
+  @Roles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   create(@Body(new ValidationPipe()) createArticleTagDto: CreateArticleTagDto) {
     return this.articleTagsService.create(createArticleTagDto);
@@ -77,7 +77,7 @@ export class ArticleTagsController {
     type: BasicArticleTagDto,
   })
   @ApiBearerAuth()
-  @Roles(Role.ADMIN)
+  @Roles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   update(
     @Param('id') id: string,
@@ -96,7 +96,7 @@ export class ArticleTagsController {
     description: ARTICLE_TAGS_MESSAGES.SUCCESS,
   })
   @ApiBearerAuth()
-  @Roles(Role.ADMIN)
+  @Roles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   remove(@Param('id') id: string) {
     return this.articleTagsService.remove(+id);

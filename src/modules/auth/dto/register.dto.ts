@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 
 import { MIN_PASSWORD_LENGTH } from '@src/commons/constants';
-import { Role } from '@src/modules/users/enums/role.enum';
+import { UserRole } from '@src/modules/users/enums/role.enum';
 import { BasicSocialDto } from '@src/modules/users/dto/social-basic.dto';
 
 export class RegisterDto {
@@ -46,7 +46,7 @@ export class RegisterResponseDto {
     avatar: string;
     email: string;
     phone: string;
-    role: Role;
+    role: UserRole;
     lastLogin: Date;
     createdAt: Date;
     updateAt: Date;

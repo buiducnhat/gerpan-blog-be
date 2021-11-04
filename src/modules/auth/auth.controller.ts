@@ -5,7 +5,7 @@ import { Roles } from '@src/decorators/roles.decorator';
 import { AuthService } from './auth.service';
 import { LoginDto, LoginResponseDto } from './dto/login.dto';
 import { UserInfoDto } from '@src/modules/users/dto/user-info.dto';
-import { Role } from '@src/modules/users/enums/role.enum';
+import { UserRole } from '@src/modules/users/enums/role.enum';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RolesGuard } from './guards/roles.guard';
 import { RegisterDto, RegisterResponseDto } from './dto/register.dto';
@@ -54,7 +54,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Admin', description: 'Only user with role Admin can access' })
   @ApiResponse({ status: HttpStatus.OK, description: 'success' })
   @ApiBearerAuth()
-  @Roles(Role.ADMIN)
+  @Roles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   async admin() {
     return { message: 'Admin route for testing' };

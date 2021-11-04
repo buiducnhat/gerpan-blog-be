@@ -1,6 +1,6 @@
 import { Article } from '@src/modules/articles/entities/article.entity';
 import { ArticleComment } from '@src/modules/articlle-comments/entities/articlle-comment.entity';
-import { Role } from '@src/modules/users/enums/role.enum';
+import { UserRole } from '@src/modules/users/enums/role.enum';
 import {
   Column,
   CreateDateColumn,
@@ -33,8 +33,8 @@ export class User {
   @Column({ length: 15, nullable: true })
   phone: string;
 
-  @Column({ type: 'enum', enum: Role, default: Role.USER })
-  role: Role;
+  @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
+  role: UserRole;
 
   @Column({ nullable: true, select: false })
   password: string;

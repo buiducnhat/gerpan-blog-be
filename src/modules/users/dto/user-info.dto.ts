@@ -1,5 +1,5 @@
 import { BasicSocialDto } from '@src/modules/users/dto/social-basic.dto';
-import { Role } from '@src/modules/users/enums/role.enum';
+import { UserRole } from '@src/modules/users/enums/role.enum';
 
 export class UserInfoDto {
   id: number;
@@ -8,7 +8,7 @@ export class UserInfoDto {
   avatar: string;
   email: string;
   phone: string;
-  role: Role;
+  role: UserRole;
   lastLogin: Date;
   createdAt: Date;
   updateAt: Date;
