@@ -27,7 +27,10 @@ import { CreateArticleTagDto } from './dto/article-tag-create.dto';
 import { UpdateArticleTagDto } from './dto/article-tag-update.dto';
 import { BasicArticleTagDto } from './dto/article-tag-basic.dto';
 import { ARTICLE_TAGS_MESSAGES } from './common/article-tags.constant';
-import { MyApiForbiddenResponse } from '@src/decorators/swagger-extend.decorator';
+import {
+  MyApiForbiddenResponse,
+  MyApiUnauthorizedResponse,
+} from '@src/decorators/swagger-extend.decorator';
 
 @ApiTags('Article Tags')
 @Controller('article-tags')
@@ -40,6 +43,7 @@ export class ArticleTagsController {
     description: 'Create article tag (required admin permission)',
   })
   @ApiCreatedResponse({ description: ARTICLE_TAGS_MESSAGES.SUCCESS, type: BasicArticleTagDto })
+  @MyApiUnauthorizedResponse()
   @MyApiForbiddenResponse()
   @ApiBearerAuth()
   @Roles(UserRole.ADMIN)
@@ -80,6 +84,7 @@ export class ArticleTagsController {
     description: ARTICLE_TAGS_MESSAGES.SUCCESS,
     type: BasicArticleTagDto,
   })
+  @MyApiUnauthorizedResponse()
   @MyApiForbiddenResponse()
   @ApiBearerAuth()
   @Roles(UserRole.ADMIN)
@@ -100,6 +105,7 @@ export class ArticleTagsController {
     status: HttpStatus.OK,
     description: ARTICLE_TAGS_MESSAGES.SUCCESS,
   })
+  @MyApiUnauthorizedResponse()
   @MyApiForbiddenResponse()
   @ApiBearerAuth()
   @Roles(UserRole.ADMIN)
