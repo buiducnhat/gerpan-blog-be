@@ -1,15 +1,7 @@
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsOptional,
-  IsPhoneNumber,
-  MaxLength,
-  MinLength,
-} from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
 import { MIN_PASSWORD_LENGTH } from '@src/commons/constants';
-import { UserRole } from '@src/modules/users/enums/role.enum';
-import { BasicSocialDto } from '@src/modules/users/dto/social-basic.dto';
+import { UserInfoDto } from '@modules/users/dto/user-info.dto';
 
 export class RegisterDto {
   @IsNotEmpty()
@@ -21,7 +13,7 @@ export class RegisterDto {
   lastName: string;
 
   @IsOptional()
-  @IsNotEmpty()
+  @IsString()
   avatar?: string;
 
   @IsEmail()
@@ -29,27 +21,17 @@ export class RegisterDto {
   email: string;
 
   @IsOptional()
-  @IsPhoneNumber('VI')
+  @IsString()
+  @MaxLength(15)
   phone?: string;
 
   @IsNotEmpty()
   @MinLength(MIN_PASSWORD_LENGTH)
+  @MaxLength(50)
   password: string;
 }
 
 export class RegisterResponseDto {
   token: string;
-  user: {
-    id: number;
-    firstName: string;
-    lastName: string;
-    avatar: string;
-    email: string;
-    phone: string;
-    role: UserRole;
-    lastLogin: Date;
-    createdAt: Date;
-    updateAt: Date;
-    socials: BasicSocialDto[];
-  };
+  user: UserInfoDto;
 }

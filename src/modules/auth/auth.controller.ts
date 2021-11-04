@@ -1,5 +1,12 @@
 import { Body, Controller, Get, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 
 import { Roles } from '@src/decorators/roles.decorator';
 import { AuthService } from './auth.service';
@@ -15,6 +22,7 @@ import { FacebookAuthGuard } from './guards/facebook-auth.guard';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
 import { IRequestUser } from './interfaces/req-user.interface';
 import { AUTH_MESSAGE } from './common/auth.constant';
+import { UnauthorizedDto } from './dto/unauthorized.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -23,18 +31,15 @@ export class AuthController {
 
   @Post('/login')
   @ApiOperation({ summary: 'Login' })
-  @ApiResponse({ status: HttpStatus.OK, type: LoginResponseDto, description: AUTH_MESSAGE.SUCCESS })
+  @ApiCreatedResponse({ type: LoginResponseDto, description: AUTH_MESSAGE.SUCCESS })
+  @ApiUnauthorizedResponse({ type: UnauthorizedDto })
   async login(@Body(new ValidationPipe()) loginDto: LoginDto): Promise<LoginResponseDto> {
     return this.authService.login(loginDto);
   }
 
   @Post('/register')
   @ApiOperation({ summary: 'Register' })
-  @ApiResponse({
-    status: HttpStatus.CREATED,
-    type: RegisterResponseDto,
-    description: AUTH_MESSAGE.SUCCESS,
-  })
+  @ApiCreatedResponse({ type: RegisterResponseDto, description: AUTH_MESSAGE.SUCCESS })
   async register(
     @Body(new ValidationPipe()) registerDto: RegisterDto,
   ): Promise<RegisterResponseDto> {

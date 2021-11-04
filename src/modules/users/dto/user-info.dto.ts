@@ -1,16 +1,13 @@
-import { BasicSocialDto } from '@src/modules/users/dto/social-basic.dto';
-import { UserRole } from '@src/modules/users/enums/role.enum';
+import { OmitType } from '@nestjs/swagger';
 
-export class UserInfoDto {
-  id: number;
-  firstName: string;
-  lastName: string;
-  avatar: string;
-  email: string;
-  phone: string;
-  role: UserRole;
-  lastLogin: Date;
-  createdAt: Date;
-  updateAt: Date;
+import { BasicSocialDto } from '../dto/social-basic.dto';
+import { User } from '../entities/user.entity';
+
+export class UserInfoDto extends OmitType(User, [
+  'articles',
+  'articleComments',
+  'socials',
+  'password',
+] as const) {
   socials: BasicSocialDto[];
 }

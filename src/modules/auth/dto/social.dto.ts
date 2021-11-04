@@ -1,11 +1,12 @@
-import { SocialProvider } from '@modules/users/enums/social-provider.enum';
+import { OmitType } from '@nestjs/swagger';
+import { Social } from '@src/modules/users/entities/social.entity';
 
-export class SocialDto {
+export class SocialDto extends OmitType(Social, [
+  'createdAt',
+  'updateAt',
+  'deletedAt',
+  'user',
+  'id',
+] as const) {
   socialId: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  avatar: string;
-  phone?: string;
-  provider: SocialProvider;
 }

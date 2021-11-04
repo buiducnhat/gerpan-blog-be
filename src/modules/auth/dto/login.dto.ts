@@ -1,7 +1,6 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
-import { UserRole } from '@src/modules/users/enums/role.enum';
-import { BasicSocialDto } from '@src/modules/users/dto/social-basic.dto';
+import { UserInfoDto } from '@modules/users/dto/user-info.dto';
 
 export class LoginDto {
   @IsEmail()
@@ -14,17 +13,5 @@ export class LoginDto {
 
 export class LoginResponseDto {
   token: string;
-  user: {
-    id: number;
-    firstName: string;
-    lastName: string;
-    avatar: string;
-    email: string;
-    phone: string;
-    role: UserRole;
-    lastLogin: Date;
-    createdAt: Date;
-    updateAt: Date;
-    socials: BasicSocialDto[];
-  };
+  user: UserInfoDto;
 }

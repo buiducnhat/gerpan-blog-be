@@ -35,6 +35,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       firstName: profile.name.givenName,
       lastName: profile.name.familyName,
       avatar: profile.photos[0].value,
+      phone: null,
     };
     const result = await this.authService.loginWithSocial(socialUser);
 

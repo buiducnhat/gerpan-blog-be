@@ -36,6 +36,7 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
       firstName: profile.name.givenName,
       lastName: profile.name.familyName,
       avatar: profile.photos[0].value,
+      phone: null,
     };
     const result = await this.authService.loginWithSocial(socialUser);
 
