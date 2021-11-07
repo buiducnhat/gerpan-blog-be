@@ -1,3 +1,3 @@
 import { BasicArticleDto } from './article-basic.dto';
 
-export class DetailArticleCategoryDto extends BasicArticleDto {}
+export class DetailArticleDto extends BasicArticleDto {}

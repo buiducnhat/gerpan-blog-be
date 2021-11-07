@@ -38,7 +38,7 @@ import {
   MyApiPaginatedQuery,
   MyApiUnauthorizedResponse,
 } from '@src/decorators/swagger-extend.decorator';
-import { DetailArticleCategoryDto } from './dto/article-detail.dto';
+import { DetailArticleDto } from './dto/article-detail.dto';
 import { Article } from './entities/article.entity';
 
 @ApiTags('Articles')
@@ -85,7 +85,7 @@ export class ArticlesController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: ARTICLE_MESSAGES.SUCCESS,
-    type: DetailArticleCategoryDto,
+    type: DetailArticleDto,
   })
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.articlesService.findOne(id);
