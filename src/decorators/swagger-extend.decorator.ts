@@ -29,11 +29,11 @@ export class NotFoundResponse {
 export const MyApiNotFoundResponse = (properties?: any) =>
   ApiNotFoundResponse({ type: NotFoundResponse, ...properties });
 
-export class MyPagination implements IPaginationOptions {
+export class MyPagination {
   @ApiProperty({ default: 1, required: false })
-  page: number;
+  page?: number;
 
   @ApiProperty({ default: 10, required: false })
-  limit: number;
+  limit?: number;
 }
 export const MyApiPaginatedQuery = () => ApiQuery({ type: MyPagination });
