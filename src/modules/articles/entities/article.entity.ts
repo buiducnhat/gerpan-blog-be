@@ -14,7 +14,7 @@ import {
 import { User } from '@src/modules/users/entities/user.entity';
 import { ArticleCategory } from '@src/modules/article-categories/entities/article-category.entity';
 import { ArticleTag } from '@src/modules/article-tags/entities/article-tag.entity';
-import { ArticleComment } from '@src/modules/articlle-comments/entities/articlle-comment.entity';
+import { ArticleComment } from '@src/modules/articles/entities/articlle-comment.entity';
 
 @Entity()
 export class Article {

@@ -1,5 +1,5 @@
 import { Article } from '@src/modules/articles/entities/article.entity';
-import { ArticleComment } from '@src/modules/articlle-comments/entities/articlle-comment.entity';
+import { ArticleComment } from '@src/modules/articles/entities/articlle-comment.entity';
 import { UserRole } from '@src/modules/users/enums/role.enum';
 import {
   Column,

@@ -4,3 +4,5 @@ export const ARTICLE_MESSAGES = {
   INVALID_CATEGORY: 'Invalid category',
   INVALID_TAGS: 'Invalid tags',
 };
+
+export const ARTICLE_ENDPOINT = 'articles';

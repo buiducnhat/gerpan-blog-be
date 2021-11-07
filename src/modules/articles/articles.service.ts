@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { paginate, Pagination, IPaginationOptions } from 'nestjs-typeorm-paginate';
 
 import { CreateArticleDto } from './dto/article-create.dto';
 import { UpdateArticleDto } from './dto/article-update.dto';
@@ -8,7 +9,7 @@ import { Article } from './entities/article.entity';
 import { convertDTO } from '@src/utils/common.util';
 import { ARTICLE_MESSAGES } from './common/articles.constant';
 import { ArticleTag } from '../article-tags/entities/article-tag.entity';
-import { ArticleComment } from '../articlle-comments/entities/articlle-comment.entity';
+import { ArticleComment } from './entities/articlle-comment.entity';
 import { ArticleCategory } from '../article-categories/entities/article-category.entity';
 
 @Injectable()
@@ -40,8 +41,8 @@ export class ArticlesService {
     return this.articleRepository.save(newArticle);
   }
 
-  findAll() {
-    return this.articleRepository.find();
+  findAll(options: IPaginationOptions): Promise<Pagination<Article>> {
+    return paginate<Article>(this.articleRepository, options);
   }
 
   findOne(id: number) {

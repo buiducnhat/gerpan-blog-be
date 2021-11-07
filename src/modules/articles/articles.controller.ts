@@ -9,14 +9,19 @@ import {
   UseGuards,
   HttpStatus,
   ValidationPipe,
+  Query,
+  DefaultValuePipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiOperation,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Pagination } from 'nestjs-typeorm-paginate';
 
 import { Roles } from '@src/decorators/roles.decorator';
 import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';
@@ -26,13 +31,15 @@ import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/article-create.dto';
 import { UpdateArticleDto } from './dto/article-update.dto';
 import { BasicArticleDto } from './dto/article-basic.dto';
-import { ARTICLE_MESSAGES } from './common/articles.constant';
+import { ARTICLE_ENDPOINT, ARTICLE_MESSAGES } from './common/articles.constant';
 import {
   MyApiForbiddenResponse,
   MyApiNotFoundResponse,
+  MyApiPaginatedQuery,
   MyApiUnauthorizedResponse,
 } from '@src/decorators/swagger-extend.decorator';
 import { DetailArticleCategoryDto } from './dto/article-detail.dto';
+import { Article } from './entities/article.entity';
 
 @ApiTags('Articles')
 @Controller('articles')
@@ -64,8 +71,13 @@ export class ArticlesController {
     description: ARTICLE_MESSAGES.SUCCESS,
     type: [BasicArticleDto],
   })
-  findAll() {
-    return this.articlesService.findAll();
+  @MyApiPaginatedQuery()
+  async findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
+  ): Promise<Pagination<Article>> {
+    limit = Math.min(limit, 100);
+    return this.articlesService.findAll({ page, limit, route: `/${ARTICLE_ENDPOINT}` });
   }
 
   @Get(':id')
@@ -75,8 +87,8 @@ export class ArticlesController {
     description: ARTICLE_MESSAGES.SUCCESS,
     type: DetailArticleCategoryDto,
   })
-  findOne(@Param('id') id: string) {
-    return this.articlesService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.articlesService.findOne(id);
   }
 
   @Put(':id')
