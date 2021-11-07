@@ -52,10 +52,20 @@ export class ArticlesService {
   async findOne(id: number) {
     const article = await this.articleRepository
       .createQueryBuilder('art')
-      .select(['art', 'aut.id', 'aut.firstName', 'aut.lastName'])
-      .leftJoinAndSelect('art.category', 'cat')
-      .leftJoinAndSelect('art.tags', 'tag')
-      .leftJoinAndSelect('art.comments', 'com')
+      .select([
+        'art',
+        'aut.id',
+        'aut.firstName',
+        'aut.lastName',
+        'aut.avatar',
+        'aut.lastLogin',
+        'cat',
+        'tag',
+        'com',
+      ])
+      .leftJoin('art.category', 'cat')
+      .leftJoin('art.tags', 'tag')
+      .leftJoin('art.comments', 'com')
       .leftJoin('art.author', 'aut')
       .where('art.id = :id', { id })
       .getOne();
