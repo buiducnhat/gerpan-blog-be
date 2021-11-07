@@ -1,4 +1,13 @@
-import { IsNotEmpty, IsOptional, IsString, IsUrl, MaxLength, MinLength } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUrl,
+  MaxLength,
+  Min,
+} from 'class-validator';
 
 export class CreateArticleDto {
   @IsString()
@@ -17,9 +26,10 @@ export class CreateArticleDto {
   @IsNotEmpty()
   content: string;
 
-  @MinLength(1, { each: true })
-  categories: number[];
+  @IsNumber()
+  @Min(1)
+  category: number;
 
-  @MinLength(0, { each: true })
+  @IsArray()
   tags: number[];
 }
