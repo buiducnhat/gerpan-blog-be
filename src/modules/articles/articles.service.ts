@@ -11,6 +11,7 @@ import { ARTICLE_MESSAGES } from './common/articles.constant';
 import { ArticleTag } from '../article-tags/entities/article-tag.entity';
 import { ArticleComment } from './entities/articlle-comment.entity';
 import { ArticleCategory } from '../article-categories/entities/article-category.entity';
+import { User } from '@modules/users/entities/user.entity';
 
 @Injectable()
 export class ArticlesService {
@@ -25,9 +26,12 @@ export class ArticlesService {
     private articleCommentRepository: Repository<ArticleComment>,
   ) {}
 
-  async create(createArticleDto: CreateArticleDto) {
+  async create(createArticleDto: CreateArticleDto, user: User) {
     const newArticle = new Article();
     convertDTO(createArticleDto, newArticle);
+
+    // Insert author
+    newArticle.author = user;
 
     // Insert article category
     newArticle.category = await this.articleCategoryRepository.findOne(createArticleDto.category);

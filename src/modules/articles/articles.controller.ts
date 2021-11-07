@@ -40,6 +40,8 @@ import {
 } from '@src/decorators/swagger-extend.decorator';
 import { DetailArticleDto } from './dto/article-detail.dto';
 import { Article } from './entities/article.entity';
+import { AuthUser } from '@src/decorators/auth-user.decorator';
+import { User } from '@modules/users/entities/user.entity';
 
 @ApiTags('Articles')
 @Controller('articles')
@@ -60,8 +62,8 @@ export class ArticlesController {
   @ApiBearerAuth()
   @Roles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  create(@Body(new ValidationPipe()) createArticleDto: CreateArticleDto) {
-    return this.articlesService.create(createArticleDto);
+  create(@Body(new ValidationPipe()) createArticleDto: CreateArticleDto, @AuthUser() user: User) {
+    return this.articlesService.create(createArticleDto, user);
   }
 
   @Get()
