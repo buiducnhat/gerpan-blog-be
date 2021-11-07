@@ -45,8 +45,11 @@ export class ArticlesService {
     return paginate<Article>(this.articleRepository, options);
   }
 
-  findOne(id: number) {
-    return this.articleRepository.findOne(id);
+  async findOne(id: number) {
+    const article = await this.articleRepository.findOne(id);
+
+    if (!article) throw new NotFoundException(ARTICLE_MESSAGES.NOT_FOUND);
+    return article;
   }
 
   async update(id: number, updateArticleDto: UpdateArticleDto) {
