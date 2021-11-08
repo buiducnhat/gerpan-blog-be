@@ -41,12 +41,25 @@ export class ArticleCommentsService {
     return this.articleCommentRepository.save(newArticleComment);
   }
 
-  findAll() {
-    return this.articleCommentRepository.find();
+  findAllOfArticle(articleId: number) {
+    return this.articleCommentRepository
+      .createQueryBuilder('comment')
+      .leftJoin('comment.article', 'article')
+      .leftJoinAndSelect('comment.parent', 'parent')
+      .leftJoinAndSelect('comment.children', 'chilren')
+      .where('article.id = :articleId', { articleId })
+      .getMany();
   }
 
-  findOne(id: number) {
-    return this.articleCommentRepository.findOne(id);
+  findOne(articleId: number, id: number) {
+    return this.articleCommentRepository
+      .createQueryBuilder('comment')
+      .leftJoin('comment.article', 'article')
+      .leftJoinAndSelect('comment.parent', 'parent')
+      .leftJoinAndSelect('comment.children', 'chilren')
+      .where('article.id = :articleId', { articleId })
+      .where('comment.id = :id', { id })
+      .getOne();
   }
 
   async update(id: number, updateArticleCommentDto: UpdateArticleCommentDto) {

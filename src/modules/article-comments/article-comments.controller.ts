@@ -36,7 +36,7 @@ import { AuthUser } from '@src/decorators/auth-user.decorator';
 import { User } from '@modules/users/entities/user.entity';
 
 @ApiTags('Article Comments')
-@Controller('articles/:articleId')
+@Controller('articles/:articleId/comments')
 export class ArticleCommentsController {
   constructor(private readonly articleCommentsService: ArticleCommentsService) {}
 
@@ -52,6 +52,7 @@ export class ArticleCommentsController {
   @MyApiUnauthorizedResponse()
   @MyApiForbiddenResponse()
   @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
   create(
     @Param('articleId', ParseIntPipe) articleId: number,
     @AuthUser() user: User,
@@ -67,8 +68,8 @@ export class ArticleCommentsController {
     description: ARTICLE_COMMENTS_MESSAGES.SUCCESS,
     type: [BasicArticleCommentDto],
   })
-  findAll() {
-    return this.articleCommentsService.findAll();
+  getCommentsOfArticle(@Param('articleId', ParseIntPipe) articleId: number) {
+    return this.articleCommentsService.findAllOfArticle(articleId);
   }
 
   @Get(':id')
@@ -78,8 +79,11 @@ export class ArticleCommentsController {
     description: ARTICLE_COMMENTS_MESSAGES.SUCCESS,
     type: BasicArticleCommentDto,
   })
-  findOne(@Param('id') id: string) {
-    return this.articleCommentsService.findOne(+id);
+  findOne(
+    @Param('articleId', ParseIntPipe) articleId: number,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.articleCommentsService.findOne(articleId, id);
   }
 
   @Put(':id')
