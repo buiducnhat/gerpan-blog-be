@@ -4,16 +4,20 @@ import {
   ApiNotFoundResponse,
   ApiProperty,
   ApiQuery,
+  ApiOkResponse,
+  getSchemaPath,
 } from '@nestjs/swagger';
+import { applyDecorators, Type } from '@nestjs/common';
 
 import { ForbiddenDto } from '@modules/auth/dto/forbidden.dto';
 import { UnauthorizedDto } from '@src/modules/auth/dto/unauthorized.dto';
+import { PaginationDto } from '@src/modules/pagination/dto/pagination.dto';
 
 export const MyApiForbiddenResponse = (properties?: any) =>
-  ApiForbiddenResponse({ type: ForbiddenDto, ...properties });
+  applyDecorators(ApiForbiddenResponse({ type: ForbiddenDto, ...properties }));
 
 export const MyApiUnauthorizedResponse = (properties?: any) =>
-  ApiUnauthorizedResponse({ type: UnauthorizedDto, ...properties });
+  applyDecorators(ApiUnauthorizedResponse({ type: UnauthorizedDto, ...properties }));
 
 export class NotFoundResponse {
   @ApiProperty({ default: 404 })
@@ -26,7 +30,7 @@ export class NotFoundResponse {
   error?: string;
 }
 export const MyApiNotFoundResponse = (properties?: any) =>
-  ApiNotFoundResponse({ type: NotFoundResponse, ...properties });
+  applyDecorators(ApiNotFoundResponse({ type: NotFoundResponse, ...properties }));
 
 export class MyPagination {
   @ApiProperty({ default: 1, required: false })
@@ -35,4 +39,28 @@ export class MyPagination {
   @ApiProperty({ default: 10, required: false })
   limit?: number;
 }
-export const MyApiPaginatedQuery = () => ApiQuery({ type: MyPagination });
+export const MyApiPaginatedQuery = () => applyDecorators(ApiQuery({ type: MyPagination }));
+
+export const MyApiPaginatedResponse = <TModel extends Type<any>>(
+  model: TModel,
+  properties?: any,
+) => {
+  return applyDecorators(
+    ApiOkResponse({
+      ...properties,
+      schema: {
+        allOf: [
+          { $ref: getSchemaPath(PaginationDto) },
+          {
+            properties: {
+              items: {
+                type: 'array',
+                items: { $ref: getSchemaPath(model) },
+              },
+            },
+          },
+        ],
+      },
+    }),
+  );
+};

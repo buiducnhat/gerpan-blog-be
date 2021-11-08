@@ -29,18 +29,19 @@ import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/article-create.dto';
 import { UpdateArticleDto } from './dto/article-update.dto';
 import { BasicArticleDto } from './dto/article-basic.dto';
-import { ARTICLE_ENDPOINT, ARTICLE_MESSAGES } from './common/articles.constant';
+import { ARTICLE_MESSAGES } from './common/articles.constant';
 import {
   MyApiForbiddenResponse,
   MyApiNotFoundResponse,
   MyApiPaginatedQuery,
+  MyApiPaginatedResponse,
   MyApiUnauthorizedResponse,
 } from '@src/decorators/swagger-extend.decorator';
 import { DetailArticleDto } from './dto/article-detail.dto';
 import { Article } from './entities/article.entity';
 import { AuthUser } from '@src/decorators/auth-user.decorator';
 import { User } from '@modules/users/entities/user.entity';
-import { PaginationDto } from '@modules/pagination/dto/pagination.dto';
+import { PaginationDto, PaginationMetaDto } from '@modules/pagination/dto/pagination.dto';
 
 @ApiTags('Articles')
 @Controller('articles')
@@ -64,14 +65,9 @@ export class ArticlesController {
   create(@Body(new ValidationPipe()) createArticleDto: CreateArticleDto, @AuthUser() user: User) {
     return this.articlesService.create(createArticleDto, user);
   }
-
   @Get()
   @ApiOperation({ summary: 'Get all articles' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: ARTICLE_MESSAGES.SUCCESS,
-    type: [BasicArticleDto],
-  })
+  @MyApiPaginatedResponse(BasicArticleDto, { description: ARTICLE_MESSAGES.SUCCESS })
   @MyApiPaginatedQuery()
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
