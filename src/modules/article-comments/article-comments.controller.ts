@@ -32,6 +32,8 @@ import {
   MyApiForbiddenResponse,
   MyApiUnauthorizedResponse,
 } from '@src/decorators/swagger-extend.decorator';
+import { AuthUser } from '@src/decorators/auth-user.decorator';
+import { User } from '@modules/users/entities/user.entity';
 
 @ApiTags('Article Comments')
 @Controller('articles/:articleId')
@@ -52,9 +54,10 @@ export class ArticleCommentsController {
   @ApiBearerAuth()
   create(
     @Param('articleId', ParseIntPipe) articleId: number,
+    @AuthUser() user: User,
     @Body(new ValidationPipe()) createArticleCommentDto: CreateArticleCommentDto,
   ) {
-    return this.articleCommentsService.create(createArticleCommentDto);
+    return this.articleCommentsService.create(createArticleCommentDto, user, articleId);
   }
 
   @Get()

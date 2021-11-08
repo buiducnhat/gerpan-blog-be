@@ -8,7 +8,6 @@ import { Article } from './entities/article.entity';
 import { convertDTO } from '@src/utils/common.util';
 import { ARTICLE_MESSAGES } from './common/articles.constant';
 import { ArticleTag } from '@modules/article-tags/entities/article-tag.entity';
-import { ArticleComment } from '@modules/article-comments/entities/article-comment.entity';
 import { ArticleCategory } from '@modules/article-categories/entities/article-category.entity';
 import { User } from '@modules/users/entities/user.entity';
 import { PaginationParamsDto, PaginationDto } from '@src/modules/pagination/dto/pagination.dto';
@@ -23,8 +22,6 @@ export class ArticlesService {
     private articleCategoryRepository: Repository<ArticleCategory>,
     @InjectRepository(ArticleTag)
     private articleTagRepository: Repository<ArticleTag>,
-    @InjectRepository(ArticleComment)
-    private articleCommentRepository: Repository<ArticleComment>,
     private readonly paginationService: PaginationService,
   ) {}
 

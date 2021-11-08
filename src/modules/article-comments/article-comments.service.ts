@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -7,17 +7,36 @@ import { UpdateArticleCommentDto } from './dto/article-comment-update.dto';
 import { ArticleComment } from './entities/article-comment.entity';
 import { convertDTO } from '@src/utils/common.util';
 import { ARTICLE_COMMENTS_MESSAGES } from './common/article-comments.constant';
+import { User } from '@modules/users/entities/user.entity';
+import { Article } from '@modules/articles/entities/article.entity';
+import { ArticlesService } from '@modules/articles/articles.service';
 
 @Injectable()
 export class ArticleCommentsService {
   constructor(
     @InjectRepository(ArticleComment)
     private articleCommentRepository: Repository<ArticleComment>,
+    private readonly articleService: ArticlesService,
   ) {}
 
-  create(createArticleCommentDto: CreateArticleCommentDto) {
+  async create(createArticleCommentDto: CreateArticleCommentDto, user: User, articleId: number) {
     const newArticleComment = new ArticleComment();
-    convertDTO(createArticleCommentDto, newArticleComment);
+    newArticleComment.user = user;
+    newArticleComment.content = createArticleCommentDto.content;
+
+    newArticleComment.article = await this.articleService.findOne(articleId);
+    if (!newArticleComment.article) {
+      throw new BadRequestException(ARTICLE_COMMENTS_MESSAGES.INVALID_ARTICLE);
+    }
+
+    if (!!createArticleCommentDto.parent) {
+      newArticleComment.parent = await this.articleCommentRepository.findOne(
+        createArticleCommentDto.parent,
+      );
+      if (!newArticleComment.parent) {
+        throw new BadRequestException(ARTICLE_COMMENTS_MESSAGES.INVALID_PARENT);
+      }
+    }
 
     return this.articleCommentRepository.save(newArticleComment);
   }
