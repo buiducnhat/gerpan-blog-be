@@ -8,7 +8,6 @@ import {
 
 import { ForbiddenDto } from '@modules/auth/dto/forbidden.dto';
 import { UnauthorizedDto } from '@src/modules/auth/dto/unauthorized.dto';
-import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 
 export const MyApiForbiddenResponse = (properties?: any) =>
   ApiForbiddenResponse({ type: ForbiddenDto, ...properties });

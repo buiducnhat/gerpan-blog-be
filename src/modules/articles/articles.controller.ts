@@ -20,7 +20,6 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Pagination } from 'nestjs-typeorm-paginate';
 
 import { Roles } from '@src/decorators/roles.decorator';
 import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';
@@ -41,6 +40,7 @@ import { DetailArticleDto } from './dto/article-detail.dto';
 import { Article } from './entities/article.entity';
 import { AuthUser } from '@src/decorators/auth-user.decorator';
 import { User } from '@modules/users/entities/user.entity';
+import { PaginationDto } from '@modules/pagination/dto/pagination.dto';
 
 @ApiTags('Articles')
 @Controller('articles')
@@ -76,9 +76,9 @@ export class ArticlesController {
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
-  ): Promise<Pagination<Article>> {
+  ): Promise<PaginationDto<Article>> {
     limit = Math.min(limit, 100);
-    return this.articlesService.findAll({ page, limit, route: `/${ARTICLE_ENDPOINT}` });
+    return this.articlesService.findAll({ page, limit });
   }
 
   @Get(':id')

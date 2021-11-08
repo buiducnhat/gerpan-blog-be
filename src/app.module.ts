@@ -12,6 +12,7 @@ import { HealthController } from './modules/health-check/health-check.controller
 import { ArticlesModule } from './modules/articles/articles.module';
 import { ArticleCategoriesModule } from './modules/article-categories/article-categories.module';
 import { ArticleTagsModule } from './modules/article-tags/article-tags.module';
+import { PaginationModule } from './modules/pagination/pagination.module';
 import appConfig from '@configs/app.config';
 import databaseConfig from '@configs/database.config';
 import authConfig from '@configs/auth.config';
@@ -30,6 +31,7 @@ import authConfig from '@configs/auth.config';
     ArticlesModule,
     ArticleCategoriesModule,
     ArticleTagsModule,
+    PaginationModule,
   ],
   providers: [
     {

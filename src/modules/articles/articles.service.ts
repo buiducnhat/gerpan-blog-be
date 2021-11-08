@@ -1,17 +1,18 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { paginate, Pagination, IPaginationOptions } from 'nestjs-typeorm-paginate';
 
 import { CreateArticleDto } from './dto/article-create.dto';
 import { UpdateArticleDto } from './dto/article-update.dto';
 import { Article } from './entities/article.entity';
 import { convertDTO } from '@src/utils/common.util';
 import { ARTICLE_MESSAGES } from './common/articles.constant';
-import { ArticleTag } from '../article-tags/entities/article-tag.entity';
+import { ArticleTag } from '@modules/article-tags/entities/article-tag.entity';
 import { ArticleComment } from './entities/articlle-comment.entity';
-import { ArticleCategory } from '../article-categories/entities/article-category.entity';
+import { ArticleCategory } from '@modules/article-categories/entities/article-category.entity';
 import { User } from '@modules/users/entities/user.entity';
+import { PaginationParamsDto, PaginationDto } from '@src/modules/pagination/dto/pagination.dto';
+import { PaginationService } from '@modules/pagination/pagination.service';
 
 @Injectable()
 export class ArticlesService {
@@ -24,6 +25,7 @@ export class ArticlesService {
     private articleTagRepository: Repository<ArticleTag>,
     @InjectRepository(ArticleComment)
     private articleCommentRepository: Repository<ArticleComment>,
+    private readonly paginationService: PaginationService,
   ) {}
 
   async create(createArticleDto: CreateArticleDto, user: User) {
@@ -45,8 +47,31 @@ export class ArticlesService {
     return this.articleRepository.save(newArticle);
   }
 
-  findAll(options: IPaginationOptions): Promise<Pagination<Article>> {
-    return paginate<Article>(this.articleRepository, options);
+  async findAll(params: PaginationParamsDto): Promise<PaginationDto<Article>> {
+    const result = await this.articleRepository
+      .createQueryBuilder('art')
+      .select([
+        'art',
+        'aut.id',
+        'aut.firstName',
+        'aut.lastName',
+        'aut.avatar',
+        'aut.lastLogin',
+        'cat',
+        'tag',
+        'com',
+      ])
+      .leftJoin('art.category', 'cat')
+      .leftJoin('art.tags', 'tag')
+      .leftJoin('art.comments', 'com')
+      .leftJoin('art.author', 'aut')
+      .take(params.limit)
+      .skip((params.page - 1) * params.limit)
+      .getManyAndCount();
+
+    const [articles, total] = result;
+
+    return this.paginationService.paginate(params, articles, total);
   }
 
   async findOne(id: number) {
