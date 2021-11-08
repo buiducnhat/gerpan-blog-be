@@ -1,7 +1,119 @@
-import { Controller } from '@nestjs/common';
-import { ArticleCommentsService } from './article-comments.service';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Body,
+  Param,
+  Delete,
+  UseGuards,
+  HttpStatus,
+  ValidationPipe,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
-@Controller('article-comments')
+import { Roles } from '@src/decorators/roles.decorator';
+import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';
+import { RolesGuard } from '@modules/auth/guards/roles.guard';
+import { UserRole } from '@modules/users/enums/role.enum';
+import { ArticleCommentsService } from './article-comments.service';
+import { CreateArticleCommentDto } from './dto/article-comment-create.dto';
+import { UpdateArticleCommentDto } from './dto/article-comment-update.dto';
+import { BasicArticleCommentDto } from './dto/article-comment-basic.dto';
+import { ARTICLE_COMMENTS_MESSAGES } from './common/article-comments.constant';
+import {
+  MyApiForbiddenResponse,
+  MyApiUnauthorizedResponse,
+} from '@src/decorators/swagger-extend.decorator';
+
+@ApiTags('Article Comments')
+@Controller('articles/comments')
 export class ArticleCommentsController {
   constructor(private readonly articleCommentsService: ArticleCommentsService) {}
+
+  @Post()
+  @ApiOperation({
+    summary: 'Create article tag',
+    description: 'Create article tag (required admin permission)',
+  })
+  @ApiCreatedResponse({
+    description: ARTICLE_COMMENTS_MESSAGES.SUCCESS,
+    type: BasicArticleCommentDto,
+  })
+  @MyApiUnauthorizedResponse()
+  @MyApiForbiddenResponse()
+  @ApiBearerAuth()
+  @Roles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  create(@Body(new ValidationPipe()) createArticleCommentDto: CreateArticleCommentDto) {
+    return this.articleCommentsService.create(createArticleCommentDto);
+  }
+
+  @Get()
+  @ApiOperation({ summary: 'Get all article comments' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: ARTICLE_COMMENTS_MESSAGES.SUCCESS,
+    type: [BasicArticleCommentDto],
+  })
+  findAll() {
+    return this.articleCommentsService.findAll();
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get an article tag' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: ARTICLE_COMMENTS_MESSAGES.SUCCESS,
+    type: BasicArticleCommentDto,
+  })
+  findOne(@Param('id') id: string) {
+    return this.articleCommentsService.findOne(+id);
+  }
+
+  @Put(':id')
+  @ApiOperation({
+    summary: 'Update an article tag',
+    description: 'Update an article tag (required admin permission)',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: ARTICLE_COMMENTS_MESSAGES.SUCCESS,
+    type: BasicArticleCommentDto,
+  })
+  @MyApiUnauthorizedResponse()
+  @MyApiForbiddenResponse()
+  @ApiBearerAuth()
+  @Roles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  update(
+    @Param('id') id: string,
+    @Body(new ValidationPipe()) updateArticleCommentDto: UpdateArticleCommentDto,
+  ) {
+    return this.articleCommentsService.update(+id, updateArticleCommentDto);
+  }
+
+  @Delete(':id')
+  @ApiOperation({
+    summary: 'Delete an article tag',
+    description: 'Delete an article tag (required admin permission)',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: ARTICLE_COMMENTS_MESSAGES.SUCCESS,
+  })
+  @MyApiUnauthorizedResponse()
+  @MyApiForbiddenResponse()
+  @ApiBearerAuth()
+  @Roles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  remove(@Param('id') id: string) {
+    return this.articleCommentsService.remove(+id);
+  }
 }
