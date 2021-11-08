@@ -1,7 +1,8 @@
-import { Body, Controller, Get, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -30,8 +31,9 @@ export class AuthController {
 
   @Post('/login')
   @ApiOperation({ summary: 'Login' })
-  @ApiCreatedResponse({ type: LoginResponseDto, description: AUTH_MESSAGE.SUCCESS })
+  @ApiOkResponse({ type: LoginResponseDto, description: AUTH_MESSAGE.SUCCESS })
   @MyApiUnauthorizedResponse()
+  @HttpCode(HttpStatus.OK)
   async login(@Body(new ValidationPipe()) loginDto: LoginDto): Promise<LoginResponseDto> {
     return this.authService.login(loginDto);
   }
