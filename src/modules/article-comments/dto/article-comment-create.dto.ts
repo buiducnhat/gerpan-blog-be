@@ -1,13 +1,11 @@
-import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateArticleCommentDto {
+  @IsOptional()
+  @IsInt()
+  parent: number;
+
   @IsString()
   @IsNotEmpty()
-  @MaxLength(50)
-  title: string;
-
-  @IsOptional()
-  @IsString()
-  @MaxLength(255)
   content?: string;
 }

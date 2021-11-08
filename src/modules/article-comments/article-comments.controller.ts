@@ -9,6 +9,7 @@ import {
   UseGuards,
   HttpStatus,
   ValidationPipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -33,14 +34,14 @@ import {
 } from '@src/decorators/swagger-extend.decorator';
 
 @ApiTags('Article Comments')
-@Controller('articles/comments')
+@Controller('articles/:articleId')
 export class ArticleCommentsController {
   constructor(private readonly articleCommentsService: ArticleCommentsService) {}
 
   @Post()
   @ApiOperation({
-    summary: 'Create article tag',
-    description: 'Create article tag (required admin permission)',
+    summary: 'Create article comment',
+    description: 'Create a comment for an article',
   })
   @ApiCreatedResponse({
     description: ARTICLE_COMMENTS_MESSAGES.SUCCESS,
@@ -49,14 +50,15 @@ export class ArticleCommentsController {
   @MyApiUnauthorizedResponse()
   @MyApiForbiddenResponse()
   @ApiBearerAuth()
-  @Roles(UserRole.ADMIN)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  create(@Body(new ValidationPipe()) createArticleCommentDto: CreateArticleCommentDto) {
+  create(
+    @Param('articleId', ParseIntPipe) articleId: number,
+    @Body(new ValidationPipe()) createArticleCommentDto: CreateArticleCommentDto,
+  ) {
     return this.articleCommentsService.create(createArticleCommentDto);
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all article comments' })
+  @ApiOperation({ summary: 'Get all comments of an article' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: ARTICLE_COMMENTS_MESSAGES.SUCCESS,
@@ -67,7 +69,7 @@ export class ArticleCommentsController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get an article tag' })
+  @ApiOperation({ summary: 'Get an article comment' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: ARTICLE_COMMENTS_MESSAGES.SUCCESS,
@@ -79,8 +81,8 @@ export class ArticleCommentsController {
 
   @Put(':id')
   @ApiOperation({
-    summary: 'Update an article tag',
-    description: 'Update an article tag (required admin permission)',
+    summary: 'Update an article comment',
+    description: 'Update an article comment (required admin permission)',
   })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -101,8 +103,8 @@ export class ArticleCommentsController {
 
   @Delete(':id')
   @ApiOperation({
-    summary: 'Delete an article tag',
-    description: 'Delete an article tag (required admin permission)',
+    summary: 'Delete an article comment',
+    description: 'Delete an article comment (required admin permission)',
   })
   @ApiResponse({
     status: HttpStatus.OK,
