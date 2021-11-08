@@ -17,23 +17,23 @@ export class PaginationParamsDto {
 }
 
 export class PaginationMetaDto {
-  @ApiProperty()
+  @ApiProperty({ example: 10 })
   @IsInt()
   itemCount: number;
 
-  @ApiProperty()
+  @ApiProperty({ example: 10 })
   @IsInt()
   totalItems: number;
 
-  @ApiProperty()
+  @ApiProperty({ example: 10 })
   @IsInt()
   itemsPerPage: number;
 
-  @ApiProperty()
+  @ApiProperty({ example: 1 })
   @IsInt()
   totalPages: number;
 
-  @ApiProperty()
+  @ApiProperty({ example: 1 })
   @IsInt()
   currentPage: number;
 }

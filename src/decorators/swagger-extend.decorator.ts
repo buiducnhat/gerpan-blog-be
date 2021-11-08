@@ -11,7 +11,7 @@ import { applyDecorators, Type } from '@nestjs/common';
 
 import { ForbiddenDto } from '@modules/auth/dto/forbidden.dto';
 import { UnauthorizedDto } from '@src/modules/auth/dto/unauthorized.dto';
-import { PaginationDto } from '@src/modules/pagination/dto/pagination.dto';
+import { PaginationDto, PaginationMetaDto } from '@src/modules/pagination/dto/pagination.dto';
 
 export const MyApiForbiddenResponse = (properties?: any) =>
   applyDecorators(ApiForbiddenResponse({ type: ForbiddenDto, ...properties }));
@@ -49,6 +49,7 @@ export const MyApiPaginatedResponse = <TModel extends Type<any>>(
     ApiOkResponse({
       ...properties,
       schema: {
+        title: `PaginatedResponseOf${model.name}`,
         allOf: [
           { $ref: getSchemaPath(PaginationDto) },
           {
@@ -56,6 +57,9 @@ export const MyApiPaginatedResponse = <TModel extends Type<any>>(
               items: {
                 type: 'array',
                 items: { $ref: getSchemaPath(model) },
+              },
+              meta: {
+                $ref: getSchemaPath(PaginationMetaDto),
               },
             },
           },

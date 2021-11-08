@@ -41,7 +41,7 @@ import { DetailArticleDto } from './dto/article-detail.dto';
 import { Article } from './entities/article.entity';
 import { AuthUser } from '@src/decorators/auth-user.decorator';
 import { User } from '@modules/users/entities/user.entity';
-import { PaginationDto, PaginationMetaDto } from '@modules/pagination/dto/pagination.dto';
+import { PaginationDto } from '@modules/pagination/dto/pagination.dto';
 
 @ApiTags('Articles')
 @Controller('articles')
