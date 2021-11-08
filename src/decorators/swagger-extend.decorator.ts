@@ -2,7 +2,6 @@ import {
   ApiForbiddenResponse,
   ApiUnauthorizedResponse,
   ApiNotFoundResponse,
-  ApiProperty,
   ApiQuery,
   ApiOkResponse,
   getSchemaPath,
@@ -11,7 +10,12 @@ import { applyDecorators, Type } from '@nestjs/common';
 
 import { ForbiddenDto } from '@modules/auth/dto/forbidden.dto';
 import { UnauthorizedDto } from '@src/modules/auth/dto/unauthorized.dto';
-import { PaginationDto, PaginationMetaDto } from '@src/modules/pagination/dto/pagination.dto';
+import { NotFoundResponseDto } from '@src/common/dto/notfound.dto';
+import {
+  PaginationParamsDto,
+  PaginationDto,
+  PaginationMetaDto,
+} from '@src/modules/pagination/dto/pagination.dto';
 
 export const MyApiForbiddenResponse = (properties?: any) =>
   applyDecorators(ApiForbiddenResponse({ type: ForbiddenDto, ...properties }));
@@ -19,27 +23,10 @@ export const MyApiForbiddenResponse = (properties?: any) =>
 export const MyApiUnauthorizedResponse = (properties?: any) =>
   applyDecorators(ApiUnauthorizedResponse({ type: UnauthorizedDto, ...properties }));
 
-export class NotFoundResponse {
-  @ApiProperty({ default: 404 })
-  statusCode: number;
-
-  @ApiProperty({ default: 'Not found' })
-  message: string;
-
-  @ApiProperty({ default: 'Not found' })
-  error?: string;
-}
 export const MyApiNotFoundResponse = (properties?: any) =>
-  applyDecorators(ApiNotFoundResponse({ type: NotFoundResponse, ...properties }));
+  applyDecorators(ApiNotFoundResponse({ type: NotFoundResponseDto, ...properties }));
 
-export class MyPagination {
-  @ApiProperty({ default: 1, required: false })
-  page?: number;
-
-  @ApiProperty({ default: 10, required: false })
-  limit?: number;
-}
-export const MyApiPaginatedQuery = () => applyDecorators(ApiQuery({ type: MyPagination }));
+export const MyApiPaginatedQuery = () => applyDecorators(ApiQuery({ type: PaginationParamsDto }));
 
 export const MyApiPaginatedResponse = <TModel extends Type<any>>(
   model: TModel,
