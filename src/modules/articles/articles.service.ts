@@ -8,7 +8,7 @@ import { Article } from './entities/article.entity';
 import { convertDTO } from '@src/utils/common.util';
 import { ARTICLE_MESSAGES } from './common/articles.constant';
 import { ArticleTag } from '@modules/article-tags/entities/article-tag.entity';
-import { ArticleComment } from './entities/articlle-comment.entity';
+import { ArticleComment } from '@modules/article-comments/entities/article-comment.entity';
 import { ArticleCategory } from '@modules/article-categories/entities/article-category.entity';
 import { User } from '@modules/users/entities/user.entity';
 import { PaginationParamsDto, PaginationDto } from '@src/modules/pagination/dto/pagination.dto';

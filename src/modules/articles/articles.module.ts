@@ -5,9 +5,9 @@ import { ArticlesService } from './articles.service';
 import { ArticlesController } from './articles.controller';
 import { Article } from './entities/article.entity';
 import { ArticleTag } from '@modules/article-tags/entities/article-tag.entity';
-import { ArticleComment } from '@src/modules/articles/entities/articlle-comment.entity';
 import { ArticleCategory } from '@modules/article-categories/entities/article-category.entity';
 import { PaginationModule } from '@modules/pagination/pagination.module';
+import { ArticleComment } from '@modules/article-comments/entities/article-comment.entity';
 
 @Module({
   imports: [
