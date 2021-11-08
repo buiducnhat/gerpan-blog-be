@@ -1,4 +1,4 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, NestApplication } from '@nestjs/core';
 import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
@@ -20,7 +20,7 @@ async function bootstrap() {
 
   const port = configService.get('port');
   await app.listen(port, () => {
-    logger.log(`Server is running on port ${port}...`, 'StartApp');
+    logger.log(`on port ${port}...`, NestApplication.name);
   });
 }
 bootstrap();
