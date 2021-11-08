@@ -33,7 +33,7 @@ import {
 } from '@src/decorators/swagger-extend.decorator';
 
 @ApiTags('Article Tags')
-@Controller('article-tags')
+@Controller('articles/tags')
 export class ArticleTagsController {
   constructor(private readonly articleTagsService: ArticleTagsService) {}
 

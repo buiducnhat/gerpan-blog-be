@@ -28,10 +28,10 @@ import authConfig from '@configs/auth.config';
     TerminusModule,
     UsersModule,
     AuthModule,
-    ArticlesModule,
+    PaginationModule,
     ArticleCategoriesModule,
     ArticleTagsModule,
-    PaginationModule,
+    ArticlesModule,
   ],
   providers: [
     {

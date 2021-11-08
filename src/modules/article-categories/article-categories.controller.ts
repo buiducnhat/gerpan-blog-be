@@ -35,7 +35,7 @@ import {
 import { DetailArticleCategoryDto } from './dto/article-category-detail.dto';
 
 @ApiTags('Article Categories')
-@Controller('article-categories')
+@Controller('articles/categories')
 export class ArticleCategoriesController {
   constructor(private readonly articleCategoriesService: ArticleCategoriesService) {}
 
