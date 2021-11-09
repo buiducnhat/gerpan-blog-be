@@ -46,22 +46,28 @@ export class ArticlesService {
 
   async findAll(params: PaginationParamsDto): Promise<PaginationDto<Article>> {
     const result = await this.articleRepository
-      .createQueryBuilder('art')
+      .createQueryBuilder('article')
       .select([
-        'art',
-        'aut.id',
-        'aut.firstName',
-        'aut.lastName',
-        'aut.avatar',
-        'aut.lastLogin',
-        'cat',
+        'article',
+        'author.id',
+        'author.firstName',
+        'author.lastName',
+        'author.avatar',
+        'author.lastLogin',
+        'category',
         'tag',
-        'com',
+        'comment',
+        'commentUser.id',
+        'commentUser.firstName',
+        'commentUser.lastName',
+        'commentUser.avatar',
+        'commentUser.lastLogin',
       ])
-      .leftJoin('art.category', 'cat')
-      .leftJoin('art.tags', 'tag')
-      .leftJoin('art.comments', 'com')
-      .leftJoin('art.author', 'aut')
+      .leftJoin('article.category', 'category')
+      .leftJoin('article.tags', 'tag')
+      .leftJoin('article.comments', 'comment')
+      .leftJoin('article.author', 'author')
+      .leftJoin('comment.user', 'commentUser')
       .take(params.limit)
       .skip((params.page - 1) * params.limit)
       .getManyAndCount();
@@ -73,23 +79,29 @@ export class ArticlesService {
 
   async findOne(id: number) {
     const article = await this.articleRepository
-      .createQueryBuilder('art')
+      .createQueryBuilder('article')
       .select([
-        'art',
-        'aut.id',
-        'aut.firstName',
-        'aut.lastName',
-        'aut.avatar',
-        'aut.lastLogin',
-        'cat',
+        'article',
+        'author.id',
+        'author.firstName',
+        'author.lastName',
+        'author.avatar',
+        'author.lastLogin',
+        'category',
         'tag',
-        'com',
+        'comment',
+        'commentUser.id',
+        'commentUser.firstName',
+        'commentUser.lastName',
+        'commentUser.avatar',
+        'commentUser.lastLogin',
       ])
-      .leftJoin('art.category', 'cat')
-      .leftJoin('art.tags', 'tag')
-      .leftJoin('art.comments', 'com')
-      .leftJoin('art.author', 'aut')
-      .where('art.id = :id', { id })
+      .leftJoin('article.category', 'category')
+      .leftJoin('article.tags', 'tag')
+      .leftJoin('article.comments', 'comment')
+      .leftJoin('article.author', 'author')
+      .leftJoin('comment.user', 'commentUser')
+      .where('article.id = :id', { id })
       .getOne();
 
     if (!article) throw new NotFoundException(ARTICLE_MESSAGES.NOT_FOUND);
