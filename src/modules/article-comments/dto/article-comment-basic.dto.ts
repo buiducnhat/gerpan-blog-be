@@ -8,6 +8,15 @@ export class BasicArticleCommentDto extends OmitType(ArticleComment, [
   'user',
   'parent',
   'children',
+] as const) {}
+
+export class DetailArticleCommentDto extends OmitType(ArticleComment, [
+  'article',
+  'user',
+  'parent',
+  'children',
 ] as const) {
   user: BasicUserDto;
+  parent: BasicArticleCommentDto;
+  children: BasicArticleCommentDto[];
 }

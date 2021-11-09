@@ -1,6 +1,5 @@
 import {
   Controller,
-  Get,
   Post,
   Put,
   Body,
@@ -74,13 +73,13 @@ export class ArticleCommentsController {
   @MyApiUnauthorizedResponse()
   @MyApiForbiddenResponse()
   @ApiBearerAuth()
-  @Roles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
+    @AuthUser() user: User,
     @Body(new ValidationPipe()) updateArticleCommentDto: UpdateArticleCommentDto,
   ) {
-    return this.articleCommentsService.update(+id, updateArticleCommentDto);
+    return this.articleCommentsService.update(id, user, updateArticleCommentDto);
   }
 
   @Delete(':id')
