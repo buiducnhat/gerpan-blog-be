@@ -28,6 +28,7 @@ export class ArticleCommentsService {
     newArticleComment.user = user;
     newArticleComment.content = createArticleCommentDto.content;
 
+    // check exist article
     newArticleComment.article = await this.articleService.findOne(articleId);
     if (!newArticleComment.article) {
       throw new BadRequestException(ARTICLE_COMMENTS_MESSAGES.INVALID_ARTICLE);
@@ -36,14 +37,21 @@ export class ArticleCommentsService {
     if (!!createArticleCommentDto.parent) {
       newArticleComment.parent = await this.articleCommentRepository.findOne(
         createArticleCommentDto.parent,
+        { relations: ['article', 'parent'] },
       );
-      if (!newArticleComment.parent) {
+      // Check if parent not found or article of 2 comments not equal
+      // or parent is a child of another comment
+      if (
+        !newArticleComment.parent ||
+        newArticleComment.parent.article.id !== newArticleComment.article.id ||
+        !!newArticleComment.parent.parent
+      ) {
         throw new BadRequestException(ARTICLE_COMMENTS_MESSAGES.INVALID_PARENT);
       }
     }
 
     const articleComment = await this.articleCommentRepository.save(newArticleComment);
-    return _.omit(articleComment, ['user', 'article']);
+    return _.omit(articleComment, ['user', 'article', 'parent']);
   }
 
   async update(id: number, user: User, updateArticleCommentDto: UpdateArticleCommentDto) {
