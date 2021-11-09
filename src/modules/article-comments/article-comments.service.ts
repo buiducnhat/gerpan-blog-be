@@ -67,10 +67,21 @@ export class ArticleCommentsService {
     return _.omit(articleComment, ['user']);
   }
 
-  async remove(id: number) {
-    const result = await this.articleCommentRepository.delete(id);
-    if (result.affected) throw new NotFoundException(ARTICLE_COMMENTS_MESSAGES.NOT_FOUND);
+  async remove(id: number, user: User) {
+    const articleComment = await this.articleCommentRepository
+      .createQueryBuilder('comment')
+      .select(['comment', 'user.id'])
+      .leftJoin('comment.user', 'user')
+      .where('comment.id = :id', { id })
+      .getOne();
 
-    return result;
+    if (!articleComment) {
+      throw new NotFoundException(ARTICLE_COMMENTS_MESSAGES.NOT_FOUND);
+    }
+    if (articleComment.user.id !== user.id) {
+      throw new ForbiddenException(ARTICLE_COMMENTS_MESSAGES.NO_PERMISSION);
+    }
+
+    return this.articleCommentRepository.delete(id);
   }
 }

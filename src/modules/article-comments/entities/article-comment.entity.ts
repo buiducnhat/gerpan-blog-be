@@ -16,16 +16,16 @@ export class ArticleComment {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Article, (article) => article.comments)
+  @ManyToOne(() => Article, (article) => article.comments, { cascade: true })
   article: Article;
 
-  @ManyToOne(() => User, (user) => user.articleComments)
+  @ManyToOne(() => User, (user) => user.articleComments, { cascade: true })
   user: User;
 
   @Column({ type: 'tinytext' })
   content: string;
 
-  @ManyToOne(() => ArticleComment, (parent) => parent.children, { nullable: true })
+  @ManyToOne(() => ArticleComment, (parent) => parent.children, { nullable: true, cascade: true })
   parent: ArticleComment;
 
   @OneToMany(() => ArticleComment, (child) => child.parent)

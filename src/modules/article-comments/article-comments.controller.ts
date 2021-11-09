@@ -18,10 +18,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { Roles } from '@src/decorators/roles.decorator';
 import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from '@modules/auth/guards/roles.guard';
-import { UserRole } from '@modules/users/enums/role.enum';
 import { ArticleCommentsService } from './article-comments.service';
 import { CreateArticleCommentDto } from './dto/article-comment-create.dto';
 import { UpdateArticleCommentDto } from './dto/article-comment-update.dto';
@@ -94,9 +92,8 @@ export class ArticleCommentsController {
   @MyApiUnauthorizedResponse()
   @MyApiForbiddenResponse()
   @ApiBearerAuth()
-  @Roles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  remove(@Param('id') id: string) {
-    return this.articleCommentsService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number, @AuthUser() user: User) {
+    return this.articleCommentsService.remove(id, user);
   }
 }
