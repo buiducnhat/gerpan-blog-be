@@ -41,27 +41,6 @@ export class ArticleCommentsService {
     return this.articleCommentRepository.save(newArticleComment);
   }
 
-  findAllOfArticle(articleId: number) {
-    return this.articleCommentRepository
-      .createQueryBuilder('comment')
-      .leftJoin('comment.article', 'article')
-      .leftJoinAndSelect('comment.parent', 'parent')
-      .leftJoinAndSelect('comment.children', 'chilren')
-      .where('article.id = :articleId', { articleId })
-      .getMany();
-  }
-
-  findOne(articleId: number, id: number) {
-    return this.articleCommentRepository
-      .createQueryBuilder('comment')
-      .leftJoin('comment.article', 'article')
-      .leftJoinAndSelect('comment.parent', 'parent')
-      .leftJoinAndSelect('comment.children', 'chilren')
-      .where('article.id = :articleId', { articleId })
-      .where('comment.id = :id', { id })
-      .getOne();
-  }
-
   async update(id: number, updateArticleCommentDto: UpdateArticleCommentDto) {
     const articleComment = await this.articleCommentRepository.findOne(id);
     if (!articleComment) throw new NotFoundException(ARTICLE_COMMENTS_MESSAGES.NOT_FOUND);

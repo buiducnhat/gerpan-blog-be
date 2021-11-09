@@ -61,35 +61,10 @@ export class ArticleCommentsController {
     return this.articleCommentsService.create(createArticleCommentDto, user, articleId);
   }
 
-  @Get()
-  @ApiOperation({ summary: 'Get all comments of an article' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: ARTICLE_COMMENTS_MESSAGES.SUCCESS,
-    type: [BasicArticleCommentDto],
-  })
-  getCommentsOfArticle(@Param('articleId', ParseIntPipe) articleId: number) {
-    return this.articleCommentsService.findAllOfArticle(articleId);
-  }
-
-  @Get(':id')
-  @ApiOperation({ summary: 'Get an article comment' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: ARTICLE_COMMENTS_MESSAGES.SUCCESS,
-    type: BasicArticleCommentDto,
-  })
-  findOne(
-    @Param('articleId', ParseIntPipe) articleId: number,
-    @Param('id', ParseIntPipe) id: number,
-  ) {
-    return this.articleCommentsService.findOne(articleId, id);
-  }
-
   @Put(':id')
   @ApiOperation({
     summary: 'Update an article comment',
-    description: 'Update an article comment (required admin permission)',
+    description: 'Update an article comment (required owner)',
   })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -111,7 +86,7 @@ export class ArticleCommentsController {
   @Delete(':id')
   @ApiOperation({
     summary: 'Delete an article comment',
-    description: 'Delete an article comment (required admin permission)',
+    description: 'Delete an article comment (required owner)',
   })
   @ApiResponse({
     status: HttpStatus.OK,
