@@ -62,12 +62,16 @@ export class ArticlesService {
         'commentUser.lastName',
         'commentUser.avatar',
         'commentUser.lastLogin',
+        'commentParent',
+        'commentChildren',
       ])
       .leftJoin('article.category', 'category')
       .leftJoin('article.tags', 'tag')
       .leftJoin('article.comments', 'comment')
       .leftJoin('article.author', 'author')
       .leftJoin('comment.user', 'commentUser')
+      .leftJoin('comment.parent', 'commentParent')
+      .leftJoin('comment.children', 'commentChildren')
       .take(params.limit)
       .skip((params.page - 1) * params.limit)
       .getManyAndCount();
@@ -95,12 +99,16 @@ export class ArticlesService {
         'commentUser.lastName',
         'commentUser.avatar',
         'commentUser.lastLogin',
+        'commentParent',
+        'commentChildren',
       ])
       .leftJoin('article.category', 'category')
       .leftJoin('article.tags', 'tag')
       .leftJoin('article.comments', 'comment')
       .leftJoin('article.author', 'author')
       .leftJoin('comment.user', 'commentUser')
+      .leftJoin('comment.parent', 'commentParent')
+      .leftJoin('comment.children', 'commentChildren')
       .where('article.id = :id', { id })
       .getOne();
 
