@@ -23,6 +23,7 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
       )}/auth/facebook/redirect`,
       scope: 'email',
       profileFields: ['emails', 'name'],
+      enableProof: true,
     });
   }
 
