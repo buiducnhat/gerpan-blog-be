@@ -7,17 +7,20 @@ import { IAuthConfig } from '@src/configs/auth.config';
 import { SocialProvider } from '@modules/users/enums/social-provider.enum';
 import { SocialDto } from '@modules/auth/dto/social.dto';
 import { AuthService } from '@modules/auth/auth.service';
+import { IAppConfig } from '@src/configs/app.config';
 
 @Injectable()
 export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
   constructor(
-    private readonly configService: ConfigService<IAuthConfig>,
+    private readonly configService: ConfigService<IAuthConfig & IAppConfig>,
     private readonly authService: AuthService,
   ) {
     super({
       clientID: configService.get('FBAppId'),
       clientSecret: configService.get('FBAppSecretKey'),
-      callbackURL: 'http://localhost:4000/facebook/redirect',
+      callbackURL: `${configService.get('host')}/${configService.get(
+        'apiPrefix',
+      )}/auth/facebook/redirect`,
       scope: 'email',
       profileFields: ['emails', 'name'],
     });

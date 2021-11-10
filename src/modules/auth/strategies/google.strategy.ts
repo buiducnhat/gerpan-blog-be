@@ -18,7 +18,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     super({
       clientID: configService.get('GGAppId'),
       clientSecret: configService.get('GGAppSecretKey'),
-      // callbackURL: 'http://localhost:4000/api/auth/google/redirect',
       callbackURL: `${configService.get('host')}/${configService.get(
         'apiPrefix',
       )}/auth/google/redirect`,
