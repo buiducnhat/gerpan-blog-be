@@ -7,17 +7,21 @@ import { IAuthConfig } from '@src/configs/auth.config';
 import { SocialDto } from '@modules/auth/dto/social.dto';
 import { AuthService } from '@modules/auth/auth.service';
 import { SocialProvider } from '@modules/users/enums/social-provider.enum';
+import { IAppConfig } from '@src/configs/app.config';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor(
-    private readonly configService: ConfigService<IAuthConfig>,
+    private readonly configService: ConfigService<IAuthConfig & IAppConfig>,
     private readonly authService: AuthService,
   ) {
     super({
       clientID: configService.get('GGAppId'),
       clientSecret: configService.get('GGAppSecretKey'),
-      callbackURL: 'http://localhost:4000/api/auth/google/redirect',
+      // callbackURL: 'http://localhost:4000/api/auth/google/redirect',
+      callbackURL: `${configService.get('host')}/${configService.get(
+        'apiPrefix',
+      )}/auth/google/redirect`,
       scope: ['email', 'profile'],
     });
   }
