@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   UseGuards,
-  HttpStatus,
   ValidationPipe,
   Query,
   DefaultValuePipe,
@@ -16,8 +15,8 @@ import {
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
+  ApiOkResponse,
   ApiOperation,
-  ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 
@@ -79,11 +78,11 @@ export class ArticlesController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get an article' })
-  @ApiResponse({
-    status: HttpStatus.OK,
+  @ApiOkResponse({
     description: ARTICLE_MESSAGES.SUCCESS,
     type: DetailArticleDto,
   })
+  @MyApiNotFoundResponse()
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.articlesService.findOne(id);
   }
@@ -93,8 +92,7 @@ export class ArticlesController {
     summary: 'Update an article',
     description: 'Update an article (required admin permission)',
   })
-  @ApiResponse({
-    status: HttpStatus.OK,
+  @ApiOkResponse({
     description: ARTICLE_MESSAGES.SUCCESS,
     type: BasicArticleDto,
   })
@@ -113,8 +111,7 @@ export class ArticlesController {
     summary: 'Delete an article',
     description: 'Delete an article (required admin permission)',
   })
-  @ApiResponse({
-    status: HttpStatus.OK,
+  @ApiOkResponse({
     description: ARTICLE_MESSAGES.SUCCESS,
   })
   @MyApiUnauthorizedResponse()

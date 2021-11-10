@@ -46,13 +46,18 @@ export class ArticleCategoriesService {
       .getMany();
   }
 
-  findOne(id: number) {
-    return this.articleCategoryRepository
+  async findOne(id: number) {
+    const articleCategory = await this.articleCategoryRepository
       .createQueryBuilder('category')
       .leftJoinAndSelect('category.parent', 'parent')
       .leftJoinAndSelect('category.children', 'children')
       .where('category.id = :id', { id })
       .getOne();
+
+    if (!articleCategory) {
+      throw new NotFoundException(ARTICLE_CATEGORY_MESSAGES.NOT_FOUND);
+    }
+    return articleCategory;
   }
 
   async update(id: number, updateArticleCategoryDto: UpdateArticleCategoryDto) {

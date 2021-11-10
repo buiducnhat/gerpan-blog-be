@@ -7,14 +7,14 @@ import {
   Param,
   Delete,
   UseGuards,
-  HttpStatus,
   ValidationPipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiOperation,
-  ApiResponse,
+  ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
 
@@ -59,8 +59,7 @@ export class ArticleCategoriesController {
 
   @Get()
   @ApiOperation({ summary: 'Get all article categories' })
-  @ApiResponse({
-    status: HttpStatus.OK,
+  @ApiOkResponse({
     description: ARTICLE_CATEGORY_MESSAGES.SUCCESS,
     type: [DetailArticleCategoryDto],
   })
@@ -70,13 +69,13 @@ export class ArticleCategoriesController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get an article category' })
-  @ApiResponse({
-    status: HttpStatus.OK,
+  @ApiOkResponse({
     description: ARTICLE_CATEGORY_MESSAGES.SUCCESS,
     type: DetailArticleCategoryDto,
   })
-  findOne(@Param('id') id: string) {
-    return this.articleCategoriesService.findOne(+id);
+  @MyApiNotFoundResponse()
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.articleCategoriesService.findOne(id);
   }
 
   @Put(':id')
@@ -84,23 +83,21 @@ export class ArticleCategoriesController {
     summary: 'Update an article category',
     description: 'Update an article category (required admin permission)',
   })
-  @ApiResponse({
-    status: HttpStatus.OK,
+  @ApiOkResponse({
     description: ARTICLE_CATEGORY_MESSAGES.SUCCESS,
     type: BasicArticleCategoryDto,
   })
   @MyApiUnauthorizedResponse()
   @MyApiForbiddenResponse()
-  // @ApiNotFoundResponse({ type: NotFoundResponse })
   @MyApiNotFoundResponse()
   @ApiBearerAuth()
   @Roles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body(new ValidationPipe()) updateArticleCategoryDto: UpdateArticleCategoryDto,
   ) {
-    return this.articleCategoriesService.update(+id, updateArticleCategoryDto);
+    return this.articleCategoriesService.update(id, updateArticleCategoryDto);
   }
 
   @Delete(':id')
@@ -108,16 +105,16 @@ export class ArticleCategoriesController {
     summary: 'Delete an article category',
     description: 'Delete an article category (required admin permission)',
   })
-  @ApiResponse({
-    status: HttpStatus.OK,
+  @ApiOkResponse({
     description: ARTICLE_CATEGORY_MESSAGES.SUCCESS,
   })
+  @MyApiNotFoundResponse()
   @MyApiUnauthorizedResponse()
   @MyApiForbiddenResponse()
   @ApiBearerAuth()
   @Roles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  remove(@Param('id') id: string) {
-    return this.articleCategoriesService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.articleCategoriesService.remove(id);
   }
 }

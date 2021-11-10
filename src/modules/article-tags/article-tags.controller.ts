@@ -7,14 +7,14 @@ import {
   Param,
   Delete,
   UseGuards,
-  HttpStatus,
   ValidationPipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
+  ApiOkResponse,
   ApiOperation,
-  ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 
@@ -29,6 +29,7 @@ import { BasicArticleTagDto } from './dto/article-tag-basic.dto';
 import { ARTICLE_TAGS_MESSAGES } from './common/article-tags.constant';
 import {
   MyApiForbiddenResponse,
+  MyApiNotFoundResponse,
   MyApiUnauthorizedResponse,
 } from '@src/decorators/swagger-extend.decorator';
 
@@ -54,8 +55,7 @@ export class ArticleTagsController {
 
   @Get()
   @ApiOperation({ summary: 'Get all article tags' })
-  @ApiResponse({
-    status: HttpStatus.OK,
+  @ApiOkResponse({
     description: ARTICLE_TAGS_MESSAGES.SUCCESS,
     type: [BasicArticleTagDto],
   })
@@ -65,13 +65,13 @@ export class ArticleTagsController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get an article tag' })
-  @ApiResponse({
-    status: HttpStatus.OK,
+  @ApiOkResponse({
     description: ARTICLE_TAGS_MESSAGES.SUCCESS,
     type: BasicArticleTagDto,
   })
-  findOne(@Param('id') id: string) {
-    return this.articleTagsService.findOne(+id);
+  @MyApiNotFoundResponse()
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.articleTagsService.findOne(id);
   }
 
   @Put(':id')
@@ -79,21 +79,21 @@ export class ArticleTagsController {
     summary: 'Update an article tag',
     description: 'Update an article tag (required admin permission)',
   })
-  @ApiResponse({
-    status: HttpStatus.OK,
+  @ApiOkResponse({
     description: ARTICLE_TAGS_MESSAGES.SUCCESS,
     type: BasicArticleTagDto,
   })
   @MyApiUnauthorizedResponse()
   @MyApiForbiddenResponse()
+  @MyApiNotFoundResponse()
   @ApiBearerAuth()
   @Roles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body(new ValidationPipe()) updateArticleTagDto: UpdateArticleTagDto,
   ) {
-    return this.articleTagsService.update(+id, updateArticleTagDto);
+    return this.articleTagsService.update(id, updateArticleTagDto);
   }
 
   @Delete(':id')
@@ -101,16 +101,16 @@ export class ArticleTagsController {
     summary: 'Delete an article tag',
     description: 'Delete an article tag (required admin permission)',
   })
-  @ApiResponse({
-    status: HttpStatus.OK,
+  @ApiOkResponse({
     description: ARTICLE_TAGS_MESSAGES.SUCCESS,
   })
   @MyApiUnauthorizedResponse()
   @MyApiForbiddenResponse()
+  @MyApiNotFoundResponse()
   @ApiBearerAuth()
   @Roles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  remove(@Param('id') id: string) {
-    return this.articleTagsService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.articleTagsService.remove(id);
   }
 }

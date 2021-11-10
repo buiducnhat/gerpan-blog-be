@@ -26,8 +26,11 @@ export class ArticleTagsService {
     return this.articleTagRepository.find();
   }
 
-  findOne(id: number) {
-    return this.articleTagRepository.findOne(id);
+  async findOne(id: number) {
+    const articleTag = await this.articleTagRepository.findOne(id);
+
+    if (!articleTag) throw new NotFoundException(ARTICLE_TAGS_MESSAGES.NOT_FOUND);
+    return articleTag;
   }
 
   async update(id: number, updateArticleTagDto: UpdateArticleTagDto) {
