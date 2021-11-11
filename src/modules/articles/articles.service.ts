@@ -129,6 +129,15 @@ export class ArticlesService {
     const article = await this.articleRepository.findOne(id);
     if (!article) throw new NotFoundException(ARTICLE_MESSAGES.NOT_FOUND);
 
+    // Reinsert article category
+    article.category = await this.articleCategoryRepository.findOne(updateArticleDto.category);
+    if (!article.category) {
+      throw new BadRequestException(ARTICLE_MESSAGES.INVALID_CATEGORY);
+    }
+
+    // Reinsert article tags
+    article.tags = await this.articleTagRepository.findByIds(updateArticleDto.tags);
+
     convertDTO(updateArticleDto, article);
     return this.articleRepository.save(article);
   }
