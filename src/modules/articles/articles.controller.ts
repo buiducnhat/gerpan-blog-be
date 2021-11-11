@@ -43,6 +43,7 @@ import { User } from '@modules/users/entities/user.entity';
 import { PaginationDto } from '@modules/pagination/dto/pagination.dto';
 import { IsInRoles } from '@src/decorators/is-in-roles.decorator';
 import { JwtOptionalAuthGuard } from '@modules/auth/guards/jwt-optional-auth.guard';
+import { ChangePublishedAticleDto } from './dto/article-change-published.dto';
 
 @ApiTags('Articles')
 @Controller('articles')
@@ -81,7 +82,7 @@ export class ArticlesController {
   async findAll(
     @Query('page', new DefaultValuePipe(ARTICLE_CONFIGS.DEFAULT_PAGE), ParseIntPipe)
     page = ARTICLE_CONFIGS.DEFAULT_PAGE,
-    @Query('limit', new DefaultValuePipe(ARTICLE_CONFIGS.DEFAULT_ITEM_LIMIT), ParseIntPipe)
+    @Query('limit', new DefaultValuePipe(ARTICLE_CONFIGS.MAX_ITEM_LIMIT), ParseIntPipe)
     limit = ARTICLE_CONFIGS.DEFAULT_ITEM_LIMIT,
     @IsInRoles([UserRole.ADMIN]) isAdmin: boolean,
   ): Promise<PaginationDto<Article>> {
@@ -117,8 +118,33 @@ export class ArticlesController {
   @ApiBearerAuth()
   @Roles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  update(@Param('id') id: string, @Body(new ValidationPipe()) updateArticleDto: UpdateArticleDto) {
-    return this.articlesService.update(+id, updateArticleDto);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body(new ValidationPipe()) updateArticleDto: UpdateArticleDto,
+  ) {
+    return this.articlesService.update(id, updateArticleDto);
+  }
+
+  @Put('publish/:id')
+  @ApiOperation({
+    summary: 'Change publish status for an article',
+    description: 'Required admin permission',
+  })
+  @ApiOkResponse({
+    description: ARTICLE_MESSAGES.SUCCESS,
+    type: null,
+  })
+  @MyApiUnauthorizedResponse()
+  @MyApiForbiddenResponse()
+  @MyApiNotFoundResponse()
+  @ApiBearerAuth()
+  @Roles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  changePublished(
+    @Param('id', ParseIntPipe) id: number,
+    @Body(new ValidationPipe()) changePublishedAticleDto: ChangePublishedAticleDto,
+  ) {
+    return this.articlesService.changePublished(id, changePublishedAticleDto.published);
   }
 
   @Delete(':id')

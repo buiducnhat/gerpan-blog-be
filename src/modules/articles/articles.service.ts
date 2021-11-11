@@ -141,6 +141,15 @@ export class ArticlesService {
     return this.articleRepository.save(article);
   }
 
+  async changePublished(id: number, published = false) {
+    const article = await this.articleRepository.findOne(id);
+    if (!article) throw new NotFoundException(ARTICLE_MESSAGES.NOT_FOUND);
+
+    article.published = published;
+
+    return this.articleRepository.save(article);
+  }
+
   async remove(id: number) {
     const result = await this.articleRepository.delete(id);
     if (result.affected) throw new NotFoundException(ARTICLE_MESSAGES.NOT_FOUND);
