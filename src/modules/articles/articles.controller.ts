@@ -28,7 +28,7 @@ import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/article-create.dto';
 import { UpdateArticleDto } from './dto/article-update.dto';
 import { BasicArticleDto } from './dto/article-basic.dto';
-import { ARTICLE_MESSAGES } from './common/articles.constant';
+import { ARTICLE_CONFIGS, ARTICLE_MESSAGES } from './common/articles.constant';
 import {
   MyApiForbiddenResponse,
   MyApiNotFoundResponse,
@@ -41,6 +41,8 @@ import { Article } from './entities/article.entity';
 import { AuthUser } from '@src/decorators/auth-user.decorator';
 import { User } from '@modules/users/entities/user.entity';
 import { PaginationDto } from '@modules/pagination/dto/pagination.dto';
+import { IsInRoles } from '@src/decorators/is-in-roles.decorator';
+import { JwtOptionalAuthGuard } from '@modules/auth/guards/jwt-optional-auth.guard';
 
 @ApiTags('Articles')
 @Controller('articles')
@@ -66,32 +68,25 @@ export class ArticlesController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all published articles' })
+  @ApiOperation({
+    summary: 'Get all articles',
+    description:
+      `Return only published articles for user and all article for admin. ` +
+      `Limit is ${ARTICLE_CONFIGS.MAX_ITEM_LIMIT} items`,
+  })
   @MyApiPaginatedResponse(BasicArticleDto, { description: ARTICLE_MESSAGES.SUCCESS })
   @MyApiPaginatedQuery()
-  async findPublished(
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
-  ): Promise<PaginationDto<Article>> {
-    limit = Math.min(limit, 100);
-    return this.articlesService.findAll({ page, limit });
-  }
-
-  @Get('all')
-  @ApiOperation({ summary: 'Get all articles', description: 'Required admin permission' })
-  @MyApiPaginatedResponse(BasicArticleDto, { description: ARTICLE_MESSAGES.SUCCESS })
-  @MyApiPaginatedQuery()
-  @MyApiUnauthorizedResponse()
-  @MyApiForbiddenResponse()
   @ApiBearerAuth()
-  @Roles(UserRole.ADMIN)
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(JwtOptionalAuthGuard)
   async findAll(
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
+    @Query('page', new DefaultValuePipe(ARTICLE_CONFIGS.DEFAULT_PAGE), ParseIntPipe)
+    page = ARTICLE_CONFIGS.DEFAULT_PAGE,
+    @Query('limit', new DefaultValuePipe(ARTICLE_CONFIGS.DEFAULT_ITEM_LIMIT), ParseIntPipe)
+    limit = ARTICLE_CONFIGS.DEFAULT_ITEM_LIMIT,
+    @IsInRoles([UserRole.ADMIN]) isAdmin: boolean,
   ): Promise<PaginationDto<Article>> {
-    limit = Math.min(limit, 100);
-    return this.articlesService.findAll({ page, limit }, false);
+    limit = Math.min(limit, ARTICLE_CONFIGS.MAX_ITEM_LIMIT);
+    return this.articlesService.findAll({ page, limit }, !isAdmin);
   }
 
   @Get(':id')
@@ -101,8 +96,10 @@ export class ArticlesController {
     type: DetailArticleDto,
   })
   @MyApiNotFoundResponse()
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.articlesService.findOne(id);
+  @ApiBearerAuth()
+  @UseGuards(JwtOptionalAuthGuard)
+  findOne(@Param('id', ParseIntPipe) id: number, @IsInRoles([UserRole.ADMIN]) isAdmin: boolean) {
+    return this.articlesService.findOne(id, !isAdmin);
   }
 
   @Put(':id')

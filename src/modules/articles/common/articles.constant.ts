@@ -6,3 +6,9 @@ export const ARTICLE_MESSAGES = {
 };
 
 export const ARTICLE_ENDPOINT = 'articles';
+
+export const ARTICLE_CONFIGS = {
+  MAX_ITEM_LIMIT: 100,
+  DEFAULT_ITEM_LIMIT: 10,
+  DEFAULT_PAGE: 1,
+};
