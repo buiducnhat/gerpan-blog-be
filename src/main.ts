@@ -1,8 +1,8 @@
 import { NestFactory, NestApplication } from '@nestjs/core';
-import { Logger } from '@nestjs/common';
+import { Logger, RequestMethod } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { AppModule } from './app.module';
+import { AppModule } from './modules/app/app.module';
 import { setupSwagger } from './setup-swagger';
 import { IAppConfig } from './configs/app.config';
 import { ValidationPipe } from './pipes/validation.pipe';
@@ -14,7 +14,12 @@ async function bootstrap() {
 
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe());
-  app.setGlobalPrefix(configService.get('apiPrefix'));
+  app.setGlobalPrefix(configService.get('apiPrefix'), {
+    exclude: [
+      { path: '/', method: RequestMethod.ALL },
+      { path: '/health', method: RequestMethod.ALL },
+    ],
+  });
 
   setupSwagger(app, configService.get('apiPrefix'));
 
