@@ -138,7 +138,6 @@ export class ArticlesService {
     // Reinsert article tags
     article.tags = await this.articleTagRepository.findByIds(updateArticleDto.tags);
 
-    convertDTO(updateArticleDto, article);
     return this.articleRepository.save(article);
   }
 
