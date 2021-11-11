@@ -64,16 +64,34 @@ export class ArticlesController {
   create(@Body(new ValidationPipe()) createArticleDto: CreateArticleDto, @AuthUser() user: User) {
     return this.articlesService.create(createArticleDto, user);
   }
+
   @Get()
-  @ApiOperation({ summary: 'Get all articles' })
+  @ApiOperation({ summary: 'Get all published articles' })
   @MyApiPaginatedResponse(BasicArticleDto, { description: ARTICLE_MESSAGES.SUCCESS })
   @MyApiPaginatedQuery()
-  async findAll(
+  async findPublished(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
   ): Promise<PaginationDto<Article>> {
     limit = Math.min(limit, 100);
     return this.articlesService.findAll({ page, limit });
+  }
+
+  @Get('all')
+  @ApiOperation({ summary: 'Get all articles', description: 'Required admin permission' })
+  @MyApiPaginatedResponse(BasicArticleDto, { description: ARTICLE_MESSAGES.SUCCESS })
+  @MyApiPaginatedQuery()
+  @MyApiUnauthorizedResponse()
+  @MyApiForbiddenResponse()
+  @ApiBearerAuth()
+  @Roles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
+  ): Promise<PaginationDto<Article>> {
+    limit = Math.min(limit, 100);
+    return this.articlesService.findAll({ page, limit }, false);
   }
 
   @Get(':id')

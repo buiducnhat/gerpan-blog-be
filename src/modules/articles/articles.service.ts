@@ -44,8 +44,11 @@ export class ArticlesService {
     return this.articleRepository.save(newArticle);
   }
 
-  async findAll(params: PaginationParamsDto): Promise<PaginationDto<Article>> {
-    const result = await this.articleRepository
+  async findAll(
+    params: PaginationParamsDto,
+    onlyPublished = true,
+  ): Promise<PaginationDto<Article>> {
+    const query = this.articleRepository
       .createQueryBuilder('article')
       .select([
         'article',
@@ -73,16 +76,19 @@ export class ArticlesService {
       .leftJoin('comment.parent', 'commentParent')
       .leftJoin('comment.children', 'commentChildren')
       .take(params.limit)
-      .skip((params.page - 1) * params.limit)
-      .getManyAndCount();
+      .skip((params.page - 1) * params.limit);
 
-    const [articles, total] = result;
+    if (onlyPublished) {
+      query.where('article.published = true');
+    }
+
+    const [articles, total] = await query.getManyAndCount();
 
     return this.paginationService.paginate(params, articles, total);
   }
 
-  async findOne(id: number) {
-    const article = await this.articleRepository
+  async findOne(id: number, onlyPublished = true) {
+    const query = this.articleRepository
       .createQueryBuilder('article')
       .select([
         'article',
@@ -109,8 +115,11 @@ export class ArticlesService {
       .leftJoin('comment.user', 'commentUser')
       .leftJoin('comment.parent', 'commentParent')
       .leftJoin('comment.children', 'commentChildren')
-      .where('article.id = :id', { id })
-      .getOne();
+      .where('article.id = :id', { id });
+    if (onlyPublished) {
+      query.andWhere('article.published = true');
+    }
+    const article = await query.getOne();
 
     if (!article) throw new NotFoundException(ARTICLE_MESSAGES.NOT_FOUND);
     return article;
