@@ -3,7 +3,7 @@ import { Logger, RequestMethod } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { AppModule } from './modules/app/app.module';
-import { setupSwagger } from './setup-swagger';
+import { setupSwagger } from './modules/app/setup-swagger';
 import { IAppConfig } from './configs/app.config';
 import { ValidationPipe } from './pipes/validation.pipe';
 

@@ -1,7 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
-import { PaginationMetaDto } from './modules/pagination/dto/pagination.dto';
+import { PaginationMetaDto } from '@modules/pagination/dto/pagination.dto';
 
 export const setupSwagger = (app: INestApplication, prefix: string): void => {
   const config = new DocumentBuilder()
