@@ -51,6 +51,11 @@ export class UsersService {
     return this.findOne(userId);
   }
 
+  async updateAvatar(userId: number | string, avatar: string) {
+    await this.userRepository.update(userId, { avatar });
+    return this.findOne(userId);
+  }
+
   remove(userId: number | string) {
     return this.userRepository.delete(userId);
   }
