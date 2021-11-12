@@ -22,7 +22,10 @@ import { FacebookAuthGuard } from './guards/facebook-auth.guard';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
 import { IRequestUser } from './interfaces/req-user.interface';
 import { AUTH_MESSAGE } from './common/auth.constant';
-import { MyApiUnauthorizedResponse } from '@src/decorators/swagger-extend.decorator';
+import {
+  MyApiForbiddenResponse,
+  MyApiUnauthorizedResponse,
+} from '@src/decorators/swagger-extend.decorator';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -49,7 +52,9 @@ export class AuthController {
 
   @Get('/me')
   @ApiOperation({ summary: 'Profile' })
-  @ApiResponse({ status: HttpStatus.OK, type: UserInfoDto, description: AUTH_MESSAGE.SUCCESS })
+  @ApiOkResponse({ type: UserInfoDto, description: AUTH_MESSAGE.SUCCESS })
+  @MyApiUnauthorizedResponse()
+  @MyApiForbiddenResponse()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   async me(@AuthUser() authUser: UserInfoDto) {
@@ -58,7 +63,9 @@ export class AuthController {
 
   @Get('/admin')
   @ApiOperation({ summary: 'Admin', description: 'Only user with role Admin can access' })
-  @ApiResponse({ status: HttpStatus.OK, description: 'success' })
+  @ApiOkResponse({ description: AUTH_MESSAGE.SUCCESS })
+  @MyApiUnauthorizedResponse()
+  @MyApiForbiddenResponse()
   @ApiBearerAuth()
   @Roles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)

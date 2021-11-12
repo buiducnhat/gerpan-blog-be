@@ -1,11 +1,16 @@
-import { UserRole } from '@src/modules/users/enums/role.enum';
+import { IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class UpdateUserDto {
+  @IsString()
+  @MaxLength(50)
   firstName: string;
+
+  @IsString()
+  @MaxLength(50)
   lastName: string;
-  avatar: string;
-  email: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(15)
   phone?: string;
-  role?: UserRole;
-  password: string;
 }

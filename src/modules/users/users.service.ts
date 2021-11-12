@@ -46,8 +46,9 @@ export class UsersService {
     return qb.getOne();
   }
 
-  update(userId: number | string, updateUserDto: UpdateUserDto) {
-    return this.userRepository.update(userId, updateUserDto);
+  async update(userId: number | string, updateUserDto: UpdateUserDto) {
+    await this.userRepository.update(userId, updateUserDto);
+    return this.findOne(userId);
   }
 
   remove(userId: number | string) {
