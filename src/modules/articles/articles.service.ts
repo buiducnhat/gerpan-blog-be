@@ -11,7 +11,6 @@ import { ArticleTag } from '@modules/article-tags/entities/article-tag.entity';
 import { ArticleCategory } from '@modules/article-categories/entities/article-category.entity';
 import { User } from '@modules/users/entities/user.entity';
 import {
-  PaginationParamsDto,
   PaginationDto,
   PaginationWithSearchParamsDto,
 } from '@src/modules/pagination/dto/pagination.dto';
@@ -81,7 +80,8 @@ export class ArticlesService {
       .leftJoin('comment.children', 'commentChildren')
       .take(params.limit)
       .skip((params.page - 1) * params.limit)
-      .where('article.published = :onlyPublished', { onlyPublished });
+      .where('article.published = :onlyPublished', { onlyPublished })
+      .orderBy('article.createdAt', 'DESC');
 
     if (params.search) {
       query.andWhere('article.title LIKE :search', { search: `%${params.search}%` });
