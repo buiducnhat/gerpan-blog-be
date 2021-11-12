@@ -133,6 +133,7 @@ export class ArticlesService {
   async update(id: number, updateArticleDto: UpdateArticleDto) {
     const article = await this.articleRepository.findOne(id);
     if (!article) throw new NotFoundException(ARTICLE_MESSAGES.NOT_FOUND);
+    convertDTO(updateArticleDto, article);
 
     // Reinsert article category
     article.category = await this.articleCategoryRepository.findOne(updateArticleDto.category);
