@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
@@ -11,6 +11,7 @@ import { IAppConfig } from '@src/configs/app.config';
 import { SocialDto } from './dto/social.dto';
 import { IAuthConfig } from '@src/configs/auth.config';
 import { AUTH_MESSAGE } from './common/auth.constant';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -22,10 +23,7 @@ export class AuthService {
 
   async register(registerDto: CreateUserDto): Promise<RegisterResponseDto> {
     if (!!(await this.usersService.findWithEmail(registerDto.email))) {
-      throw new HttpException(
-        { statusCode: HttpStatus.CONFLICT, message: AUTH_MESSAGE.EMAIL_EXISTS_ERROR },
-        HttpStatus.CONFLICT,
-      );
+      throw new ConflictException(AUTH_MESSAGE.EMAIL_EXISTS_ERROR);
     }
 
     registerDto.password = bcrypt.hashSync(
@@ -43,15 +41,25 @@ export class AuthService {
   async login(loginDto: LoginDto): Promise<LoginResponseDto> {
     const user = await this.usersService.findWithEmail(loginDto.email, true);
     if (!user || !bcrypt.compareSync(loginDto.password, user.password)) {
-      throw new HttpException(
-        { statusCode: HttpStatus.UNAUTHORIZED, message: AUTH_MESSAGE.WRONG_LOGIN_ERROR },
-        HttpStatus.UNAUTHORIZED,
-      );
+      throw new UnauthorizedException(AUTH_MESSAGE.WRONG_LOGIN_ERROR);
     }
     return {
       token: this._generateToken(user.id),
       user,
     };
+  }
+
+  async changePassword(userId: number | string, changePasswordDto: ChangePasswordDto) {
+    const user = await this.usersService.findOne(userId, true);
+    if (!user || !bcrypt.compareSync(changePasswordDto.oldPassword, user.password)) {
+      throw new UnauthorizedException(AUTH_MESSAGE.WRONG_OLD_PASSWORD);
+    }
+    changePasswordDto.newPassword = bcrypt.hashSync(
+      changePasswordDto.newPassword,
+      this.configService.get('bcryptSalt'),
+    );
+
+    return this.usersService.changePassword(userId, changePasswordDto.newPassword);
   }
 
   async loginWithSocial(socialUserDto: SocialDto) {

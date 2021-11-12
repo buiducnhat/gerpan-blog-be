@@ -1,4 +1,14 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Put,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -25,6 +35,7 @@ import {
   MyApiForbiddenResponse,
   MyApiUnauthorizedResponse,
 } from '@src/decorators/swagger-extend.decorator';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -58,6 +69,20 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   async me(@AuthUser() authUser: UserInfoDto) {
     return authUser;
+  }
+
+  @Put('/password')
+  @ApiOperation({ summary: 'Change password' })
+  @ApiOkResponse({ type: UserInfoDto, description: AUTH_MESSAGE.SUCCESS })
+  @MyApiUnauthorizedResponse()
+  @MyApiForbiddenResponse()
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  async changePassword(
+    @Body(new ValidationPipe()) changePasswordDto: ChangePasswordDto,
+    @AuthUser() authUser: UserInfoDto,
+  ) {
+    return this.authService.changePassword(authUser.id, changePasswordDto);
   }
 
   @Get('/admin')

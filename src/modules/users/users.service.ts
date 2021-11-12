@@ -56,6 +56,11 @@ export class UsersService {
     return this.findOne(userId);
   }
 
+  async changePassword(userId: number | string, password: string) {
+    await this.userRepository.update(userId, { password });
+    return this.findOne(userId);
+  }
+
   remove(userId: number | string) {
     return this.userRepository.delete(userId);
   }
