@@ -49,7 +49,7 @@ export class ArticlesService {
   }
 
   async findAll(
-    params: PaginationParamsDto | PaginationWithSearchParamsDto,
+    params: PaginationWithSearchParamsDto,
     onlyPublished = true,
   ): Promise<PaginationDto<Article>> {
     const query = this.articleRepository
@@ -83,7 +83,7 @@ export class ArticlesService {
       .skip((params.page - 1) * params.limit)
       .where('article.published = :onlyPublished', { onlyPublished });
 
-    if (params instanceof PaginationWithSearchParamsDto && params.search) {
+    if (params.search) {
       query.andWhere('article.title LIKE :search', { search: `%${params.search}%` });
     }
 
