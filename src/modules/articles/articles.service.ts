@@ -10,7 +10,11 @@ import { ARTICLE_MESSAGES } from './common/articles.constant';
 import { ArticleTag } from '@modules/article-tags/entities/article-tag.entity';
 import { ArticleCategory } from '@modules/article-categories/entities/article-category.entity';
 import { User } from '@modules/users/entities/user.entity';
-import { PaginationParamsDto, PaginationDto } from '@src/modules/pagination/dto/pagination.dto';
+import {
+  PaginationParamsDto,
+  PaginationDto,
+  PaginationWithSearchParamsDto,
+} from '@src/modules/pagination/dto/pagination.dto';
 import { PaginationService } from '@modules/pagination/pagination.service';
 
 @Injectable()
@@ -45,7 +49,7 @@ export class ArticlesService {
   }
 
   async findAll(
-    params: PaginationParamsDto,
+    params: PaginationParamsDto | PaginationWithSearchParamsDto,
     onlyPublished = true,
   ): Promise<PaginationDto<Article>> {
     const query = this.articleRepository
@@ -76,10 +80,11 @@ export class ArticlesService {
       .leftJoin('comment.parent', 'commentParent')
       .leftJoin('comment.children', 'commentChildren')
       .take(params.limit)
-      .skip((params.page - 1) * params.limit);
+      .skip((params.page - 1) * params.limit)
+      .where('article.published = :onlyPublished', { onlyPublished });
 
-    if (onlyPublished) {
-      query.where('article.published = true');
+    if (params instanceof PaginationWithSearchParamsDto && params.search) {
+      query.andWhere('article.title LIKE :search', { search: `%${params.search}%` });
     }
 
     const [articles, total] = await query.getManyAndCount();

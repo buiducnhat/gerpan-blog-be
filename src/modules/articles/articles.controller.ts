@@ -76,7 +76,7 @@ export class ArticlesController {
       `Limit is ${ARTICLE_CONFIGS.MAX_ITEM_LIMIT} items`,
   })
   @MyApiPaginatedResponse(BasicArticleDto, { description: ARTICLE_MESSAGES.SUCCESS })
-  @MyApiPaginatedQuery()
+  @MyApiPaginatedQuery({ withSearch: true })
   @ApiBearerAuth()
   @UseGuards(JwtOptionalAuthGuard)
   async findAll(
@@ -84,10 +84,11 @@ export class ArticlesController {
     page = ARTICLE_CONFIGS.DEFAULT_PAGE,
     @Query('limit', new DefaultValuePipe(ARTICLE_CONFIGS.MAX_ITEM_LIMIT), ParseIntPipe)
     limit = ARTICLE_CONFIGS.DEFAULT_ITEM_LIMIT,
+    @Query('search', new DefaultValuePipe('')) search = '',
     @IsInRoles([UserRole.ADMIN]) isAdmin: boolean,
   ): Promise<PaginationDto<Article>> {
     limit = Math.min(limit, ARTICLE_CONFIGS.MAX_ITEM_LIMIT);
-    return this.articlesService.findAll({ page, limit }, !isAdmin);
+    return this.articlesService.findAll({ page, limit, search }, !isAdmin);
   }
 
   @Get(':id')

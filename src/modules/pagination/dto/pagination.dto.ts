@@ -1,4 +1,4 @@
-import { Min, IsOptional, IsInt } from 'class-validator';
+import { Min, IsOptional, IsInt, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -16,6 +16,14 @@ export class PaginationParamsDto {
   @IsInt()
   @Min(1)
   limit?: number;
+}
+
+export class PaginationWithSearchParamsDto extends PaginationParamsDto {
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @Type(() => String)
+  @IsString()
+  search?: string;
 }
 
 export class PaginationMetaDto {

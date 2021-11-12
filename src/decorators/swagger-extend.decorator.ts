@@ -15,6 +15,7 @@ import {
   PaginationParamsDto,
   PaginationDto,
   PaginationMetaDto,
+  PaginationWithSearchParamsDto,
 } from '@src/modules/pagination/dto/pagination.dto';
 
 export const MyApiForbiddenResponse = (properties?: any) =>
@@ -26,7 +27,13 @@ export const MyApiUnauthorizedResponse = (properties?: any) =>
 export const MyApiNotFoundResponse = (properties?: any) =>
   applyDecorators(ApiNotFoundResponse({ type: NotFoundResponseDto, ...properties }));
 
-export const MyApiPaginatedQuery = () => applyDecorators(ApiQuery({ type: PaginationParamsDto }));
+interface IMyApiPaginatedQueryOptions {
+  withSearch: boolean;
+}
+export const MyApiPaginatedQuery = (options?: IMyApiPaginatedQueryOptions) =>
+  applyDecorators(
+    ApiQuery({ type: options?.withSearch ? PaginationWithSearchParamsDto : PaginationParamsDto }),
+  );
 
 export const MyApiPaginatedResponse = <TModel extends Type<any>>(
   model: TModel,

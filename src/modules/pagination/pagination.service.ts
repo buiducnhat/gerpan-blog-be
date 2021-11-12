@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { PaginationParamsDto, PaginationDto } from './dto/pagination.dto';
+import {
+  PaginationParamsDto,
+  PaginationDto,
+  PaginationWithSearchParamsDto,
+} from './dto/pagination.dto';
 
 @Injectable()
 export class PaginationService {
   paginate<TEntity>(
-    params: PaginationParamsDto,
+    params: PaginationParamsDto | PaginationWithSearchParamsDto,
     items: TEntity[],
     total: number,
   ): PaginationDto<TEntity> {
