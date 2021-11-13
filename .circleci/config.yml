@@ -58,8 +58,6 @@ jobs:
       - run:
           command: ssh-add ~/.ssh/circleci
       - run:
-          command: ssh -i ~/.ssh/circleci -o StrictHostKeyChecking=no $USER@$IP
-      - run:
           command: rsync -aRvzhe ssh --progress dist $USER@$IP:~/gerpan-blog-be
       - run:
           command: ssh -i ~/.ssh/circleci -o StrictHostKeyChecking=no $USER@$IP "cd ~/gerpan-blog-be && chmod 777 ./deploy.sh && ./deploy.sh"
