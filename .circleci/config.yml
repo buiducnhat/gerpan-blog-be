@@ -58,8 +58,6 @@ jobs:
       - run:
           command: ssh-add ~/.ssh/circleci
       - run:
-          command: ssh-keyscan -H 'circleci.com' >> ~/.ssh/known_hosts
-      - run:
           command: ssh -i ~/.ssh/circleci -o StrictHostKeyChecking=no $USER@$IP
       - run:
           command: rsync -aRvzhe ssh --progress dist $USER@$IP:~/gerpan-blog-be
