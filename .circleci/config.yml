@@ -49,7 +49,9 @@ jobs:
           command: eval $(ssh-agent -s)
       - run:
           command: mkdir -p ~/.ssh
-      - run: 
+      - run:
+          command: echo "$SSH_PRIVATE_KEY"
+      - run:
           command: echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/circleci
       - run:
           command: chmod 700 ~/.ssh/circleci
