@@ -60,6 +60,6 @@ jobs:
       - run:
           command: echo "$IP" >> ~/.ssh/known_hosts
       - run:
-          command: rsync -aRvzhe "ssh -o StrictHostKeyChecking=no" --progress dist $USER@$IP:~/gerpan-blog-be
+          command: rsync -aRvzhe "ssh -i ~/.ssh/circleci" --progress dist $USER@$IP:~/gerpan-blog-be
       # - run:
       #     command: ssh -i ~/.ssh/circleci -o StrictHostKeyChecking=no $USER@$IP "cd ~/gerpan-blog-be && chmod 777 ./deploy.sh && ./deploy.sh"
