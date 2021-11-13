@@ -10,11 +10,9 @@ import { ARTICLE_MESSAGES } from './common/articles.constant';
 import { ArticleTag } from '@modules/article-tags/entities/article-tag.entity';
 import { ArticleCategory } from '@modules/article-categories/entities/article-category.entity';
 import { User } from '@modules/users/entities/user.entity';
-import {
-  PaginationDto,
-  PaginationWithSearchParamsDto,
-} from '@src/modules/pagination/dto/pagination.dto';
+import { PaginationDto } from '@src/modules/pagination/dto/pagination.dto';
 import { PaginationService } from '@modules/pagination/pagination.service';
+import { ArticleGetAllParamsDto } from './dto/article-getall.dto';
 
 @Injectable()
 export class ArticlesService {
@@ -48,7 +46,7 @@ export class ArticlesService {
   }
 
   async findAll(
-    params: PaginationWithSearchParamsDto,
+    params: ArticleGetAllParamsDto,
     onlyPublished = true,
   ): Promise<PaginationDto<Article>> {
     const query = this.articleRepository
@@ -85,6 +83,12 @@ export class ArticlesService {
 
     if (params.search) {
       query.andWhere('article.title LIKE :search', { search: `%${params.search}%` });
+    }
+    if (params.category) {
+      query.andWhere('category.id = :categoryId', { categoryId: params.category });
+    }
+    if (params.tags?.length) {
+      query.andWhere('tag.id IN (:tagIds)', { tagIds: params.tags });
     }
 
     const [articles, total] = await query.getManyAndCount();

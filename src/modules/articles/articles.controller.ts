@@ -11,6 +11,7 @@ import {
   Query,
   DefaultValuePipe,
   ParseIntPipe,
+  ParseArrayPipe,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -32,7 +33,6 @@ import { ARTICLE_CONFIGS, ARTICLE_MESSAGES } from './common/articles.constant';
 import {
   MyApiForbiddenResponse,
   MyApiNotFoundResponse,
-  MyApiPaginatedQuery,
   MyApiPaginatedResponse,
   MyApiUnauthorizedResponse,
 } from '@src/decorators/swagger-extend.decorator';
@@ -44,6 +44,7 @@ import { PaginationDto } from '@modules/pagination/dto/pagination.dto';
 import { IsInRoles } from '@src/decorators/is-in-roles.decorator';
 import { JwtOptionalAuthGuard } from '@modules/auth/guards/jwt-optional-auth.guard';
 import { ChangePublishedAticleDto } from './dto/article-change-published.dto';
+import { MyApiArticleGetAllQuery } from './decorators/article-query.decorator';
 
 @ApiTags('Articles')
 @Controller('articles')
@@ -76,10 +77,12 @@ export class ArticlesController {
       `Limit is ${ARTICLE_CONFIGS.MAX_ITEM_LIMIT} items`,
   })
   @MyApiPaginatedResponse(BasicArticleDto, { description: ARTICLE_MESSAGES.SUCCESS })
-  @MyApiPaginatedQuery({ withSearch: true })
+  @MyApiArticleGetAllQuery()
   @ApiBearerAuth()
   @UseGuards(JwtOptionalAuthGuard)
   async findAll(
+    @Query('category', new DefaultValuePipe(0), ParseIntPipe) category = 0,
+    @Query('tags', new ParseArrayPipe({ items: Number, optional: true })) tags = [0],
     @Query('page', new DefaultValuePipe(ARTICLE_CONFIGS.DEFAULT_PAGE), ParseIntPipe)
     page = ARTICLE_CONFIGS.DEFAULT_PAGE,
     @Query('limit', new DefaultValuePipe(ARTICLE_CONFIGS.MAX_ITEM_LIMIT), ParseIntPipe)
@@ -88,7 +91,7 @@ export class ArticlesController {
     @IsInRoles([UserRole.ADMIN]) isAdmin: boolean,
   ): Promise<PaginationDto<Article>> {
     limit = Math.min(limit, ARTICLE_CONFIGS.MAX_ITEM_LIMIT);
-    return this.articlesService.findAll({ page, limit, search }, !isAdmin);
+    return this.articlesService.findAll({ page, limit, search, category, tags }, !isAdmin);
   }
 
   @Get(':id')
