@@ -8,12 +8,12 @@ workflows:
           filters:
             branches:
               only:
-                - main
+                - circleci
       - deploy:
           filters:
             branches:
               only:
-                - main
+                - circleci
 
 # Define the jobs we want to run for this project
 jobs:
