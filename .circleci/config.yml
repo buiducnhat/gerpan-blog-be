@@ -50,9 +50,7 @@ jobs:
       - run:
           command: mkdir -p ~/.ssh
       - run:
-          command: echo "$SSH_PRIVATE_KEY"
-      - run:
-          command: echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/circleci
+          command: echo "$VPS_SSH_KEY" | tr -d '\r' > ~/.ssh/circleci
       - run:
           command: chmod 700 ~/.ssh/circleci
       - run:
@@ -64,6 +62,6 @@ jobs:
       - run:
           command: ssh -i ~/.ssh/circleci -o StrictHostKeyChecking=no $USER@$IP
       - run:
-          command: rsync -aRvzhe ssh --progress build $USER@$IP:~/gerpan-blog-be
+          command: rsync -aRvzhe ssh --progress dist $USER@$IP:~/gerpan-blog-be
       - run:
           command: ssh -i ~/.ssh/circleci -o StrictHostKeyChecking=no $USER@$IP "cd ~/gerpan-blog-be && chmod 777 ./deploy.sh && ./deploy.sh"
