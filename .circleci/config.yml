@@ -1,0 +1,65 @@
+version: 2.1
+
+workflows:
+  version: 2
+  build-project:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only:
+                - main
+      - deploy:
+          filters:
+            branches:
+              only:
+                - main
+
+# Define the jobs we want to run for this project
+jobs:
+  build:
+    docker:
+      - image: circleci/node:lts
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependencies-cache-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install packages
+          command: yarn install
+      - save_cache:
+          key: dependencies-cache-{{ checksum "yarn.lock" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: Build code
+          command: yarn build
+      - store_artifacts:
+          path: dist
+          name: dist
+  deploy:
+    docker:
+      - image: ubuntu:latest
+    steps:
+      - run:
+          command: apt-get update && apt-get install rsync -y -qq
+      - run: 
+          command: eval $(ssh-agent -s)
+      - run:
+          command: mkdir -p ~/.ssh
+      - run: 
+          command: echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/circleci
+      - run:
+          command: chmod 700 ~/.ssh/circleci
+      - run:
+          command: eval "$(ssh-agent -s)"
+      - run:
+          command: ssh-add ~/.ssh/circleci
+      - run:
+          command: ssh-keyscan -H 'circleci.com' >> ~/.ssh/known_hosts
+      - run:
+          command: ssh -i ~/.ssh/circleci -o StrictHostKeyChecking=no $USER@$IP
+      - run:
+          command: rsync -aRvzhe ssh --progress build $USER@$IP:~/gerpan-blog-be
+      - run:
+          command: ssh -i ~/.ssh/circleci -o StrictHostKeyChecking=no $USER@$IP "cd ~/gerpan-blog-be && chmod 777 ./deploy.sh && ./deploy.sh"
