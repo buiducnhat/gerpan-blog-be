@@ -66,6 +66,6 @@ jobs:
       - run:
           command: curl -H "Circle-Token: $CIRCLE_TOKEN" https://circleci.com/api/v1.1/project/github/$GITHUB_USER/$PROJECT_NAME/latest/artifacts
       - run:
-          command: rsync -aRvzhe "ssh -i ~/.ssh/circleci" --progress dist $USER@$IP:~/gerpan-blog-be -yes
+          command: rsync -aRvzhe "ssh -i ~/.ssh/circleci" --progress ~/dist $USER@$IP:~/gerpan-blog-be -yes
       # - run:
       #     command: ssh -i ~/.ssh/circleci -o StrictHostKeyChecking=no $USER@$IP "cd ~/gerpan-blog-be && chmod 777 ./deploy.sh && ./deploy.sh"
