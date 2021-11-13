@@ -48,20 +48,18 @@ jobs:
       - run: 
           command: eval $(ssh-agent -s)
       - run:
-          command: mkdir -p ~/.ssh
+          command: echo "$VPS_SSH_KEY" | tr -d '\r' > ~/circleci
       - run:
-          command: echo "$VPS_SSH_KEY" | tr -d '\r' > ~/.ssh/circleci
-      - run:
-          command: chmod 700 ~/.ssh/circleci
+          command: chmod 700 ~/circleci
       - run:
           command: eval "$(ssh-agent -s)"
       - run:
-          command: ssh-add ~/.ssh/circleci
+          command: ssh-add ~/circleci
       - run:
-          command: ssh-keyscan -H 'circleci.com' >> ~/.ssh/known_hosts
+          command: ssh-keyscan -H 'circleci.com' >> ~/known_hosts
       - run:
-          command: ssh -i ~/.ssh/circleci -o StrictHostKeyChecking=no $USER@$IP
+          command: ssh -i ~/circleci -o StrictHostKeyChecking=no $USER@$IP
       - run:
           command: rsync -aRvzhe ssh --progress dist $USER@$IP:~/gerpan-blog-be
       - run:
-          command: ssh -i ~/.ssh/circleci -o StrictHostKeyChecking=no $USER@$IP "cd ~/gerpan-blog-be && chmod 777 ./deploy.sh && ./deploy.sh"
+          command: ssh -i ~/circleci -o StrictHostKeyChecking=no $USER@$IP "cd ~/gerpan-blog-be && chmod 777 ./deploy.sh && ./deploy.sh"
