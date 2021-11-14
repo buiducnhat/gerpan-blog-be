@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Config variable path
+export NODE_PATH=~/.nvm/versions/node/v16.13.0/bin
 export PATH=$NODE_PATH:$PATH
 source ~/.profile
 
