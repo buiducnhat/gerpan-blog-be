@@ -65,7 +65,9 @@ jobs:
       - run:
           command: echo "$IP" >> ~/.ssh/known_hosts
       - run:
-          command: curl -H "Circle-Token: $CIRCLE_TOKEN" https://circleci.com/api/v1.1/project/github/$GITHUB_USER/$PROJECT_NAME/latest/artifacts
+          command: mkdir dist && cd dist
+      - run:
+          command: curl -H "Circle-Token:\ $CIRCLE_TOKEN" https://circleci.com/api/v1.1/project/github/$GITHUB_USER/$PROJECT_NAME/latest/artifacts
       - run:
           command: unzip dist.zip -r dist/
       - run:
