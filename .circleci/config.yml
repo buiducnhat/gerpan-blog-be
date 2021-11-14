@@ -65,11 +65,11 @@ jobs:
       - run:
           command: echo "$IP" >> ~/.ssh/known_hosts
       - run:
-          command: curl -H "Circle-Token:\ $CIRCLE_TOKEN" https://circleci.com/api/v1.1/project/github/$GITHUB_USER/$PROJECT_NAME/latest/artifacts
+          command: curl -H "Circle-Token:\ $CIRCLE_TOKEN" https://circleci.com/api/v1.1/project/github/$GITHUB_USER/$PROJECT_NAME/latest/artifacts | grep -o 'https://[^"]*' | wget --verbose --header "Circle-Token:\ $CIRCLE_TOKEN" --input-file -
       - run:
           command: echo  "$(ls)"
       - run:
-          command: unzip dist.zip.zip -d dist/
+          command: unzip dist.zip -d dist/
       - run:
           command: rsync -aRvzhe "ssh -i ~/.ssh/circleci" --progress dist $USER@$IP:~/gerpan-blog-be -yes
       # - run:
