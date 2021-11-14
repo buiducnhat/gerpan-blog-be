@@ -62,14 +62,12 @@ jobs:
           command: eval "$(ssh-agent -s)"
       - run:
           command: ssh-add ~/.ssh/circleci
-      - run:
-          command: ssh-keyscan $IP >> ~/.ssh/known_hosts
+      # - run:
+      #     command: ssh-keyscan $IP >> ~/.ssh/known_hosts
       - run:
           command: curl -H "Circle-Token:\ $CIRCLE_TOKEN" https://circleci.com/api/v1.1/project/github/$GITHUB_USER/$PROJECT_NAME/latest/artifacts | grep -o 'https://[^"]*' | wget --verbose --header "Circle-Token:\ $CIRCLE_TOKEN" --input-file -
       - run:
           command: unzip dist.zip
-      - run:
-          command: echo "$(ls)"
       - run:
           command: rsync -aRvzhe "ssh -i ~/.ssh/circleci" --progress dist $USER@$IP:~/gerpan-blog-be -e "ssh -o StrictHostKeyChecking=no"
       # - run:
