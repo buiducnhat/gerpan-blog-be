@@ -36,15 +36,18 @@ jobs:
       - run:
           name: Build code
           command: yarn build
+      - run:
+          name: Zip the dist
+          command: zip -r dist.zip dist
       - store_artifacts:
-          path: dist
+          path: dist.zip
           name: dist
   deploy:
     docker:
       - image: ubuntu:latest
     steps:
       - run:
-          command: apt-get update && apt-get install rsync -y -qq
+          command: apt-get update && apt-get install rsync -y -qq && apt-get install curl -y -qq && apt-get install unzip -y -qq
       - run:
           command: which ssh-agent || (apt-get install openssh-client -y)
       - run: 
@@ -62,10 +65,10 @@ jobs:
       - run:
           command: echo "$IP" >> ~/.ssh/known_hosts
       - run:
-          command: mkdir dist && cd dist
-      - run:
           command: curl -H "Circle-Token: $CIRCLE_TOKEN" https://circleci.com/api/v1.1/project/github/$GITHUB_USER/$PROJECT_NAME/latest/artifacts
       - run:
-          command: rsync -aRvzhe "ssh -i ~/.ssh/circleci" --progress ~/dist $USER@$IP:~/gerpan-blog-be -yes
+          command: unzip dist.zip -r dist/
+      - run:
+          command: rsync -aRvzhe "ssh -i ~/.ssh/circleci" --progress dist $USER@$IP:~/gerpan-blog-be -yes
       # - run:
       #     command: ssh -i ~/.ssh/circleci -o StrictHostKeyChecking=no $USER@$IP "cd ~/gerpan-blog-be && chmod 777 ./deploy.sh && ./deploy.sh"
