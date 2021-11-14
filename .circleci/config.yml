@@ -67,7 +67,7 @@ jobs:
       - run:
           command: curl -H "Circle-Token:\ $CIRCLE_TOKEN" https://circleci.com/api/v1.1/project/github/$GITHUB_USER/$PROJECT_NAME/latest/artifacts
       - run:
-          command: unzip dist.zip -r dist/
+          command: unzip dist.zip -d dist/
       - run:
           command: rsync -aRvzhe "ssh -i ~/.ssh/circleci" --progress dist $USER@$IP:~/gerpan-blog-be -yes
       # - run:
