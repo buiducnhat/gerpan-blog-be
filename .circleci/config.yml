@@ -44,10 +44,10 @@ jobs:
           name: dist
   deploy:
     docker:
-      - image: ubuntu:latest
+      - image: cimg/base:stable-20.04
     steps:
       - run:
-          command: apt-get update && apt-get install rsync -y -qq && apt-get install curl -y -qq && apt-get install wget -y -qq && apt-get install unzip -y -qq
+          command: apt-get update && apt-get install rsync -y -qq
       - run:
           command: which ssh-agent || (apt-get install openssh-client -y)
       - run: 
@@ -62,8 +62,6 @@ jobs:
           command: eval "$(ssh-agent -s)"
       - run:
           command: ssh-add ~/.ssh/circleci
-      # - run:
-      #     command: ssh-keyscan $IP >> ~/.ssh/known_hosts
       - run:
           command: curl -H "Circle-Token:\ $CIRCLE_TOKEN" https://circleci.com/api/v1.1/project/github/$GITHUB_USER/$PROJECT_NAME/latest/artifacts | grep -o 'https://[^"]*' | wget --verbose --header "Circle-Token:\ $CIRCLE_TOKEN" --input-file -
       - run:
