@@ -69,8 +69,8 @@ jobs:
       - run:
           command: echo  "$(ls)"
       - run:
-          command: unzip dist.zip -d dist/
+          command: unzip dist.zip -d dist/ && cd dist
       - run:
-          command: rsync -aRvzhe "ssh -i ~/.ssh/circleci" --progress dist $USER@$IP:~/gerpan-blog-be -yes
+          command: rsync -aRvzhe "ssh -i ~/.ssh/circleci" --progress dist/ $USER@$IP:~/gerpan-blog-be -yes
       # - run:
       #     command: ssh -i ~/.ssh/circleci -o StrictHostKeyChecking=no $USER@$IP "cd ~/gerpan-blog-be && chmod 777 ./deploy.sh && ./deploy.sh"
