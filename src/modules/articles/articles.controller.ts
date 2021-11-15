@@ -82,7 +82,7 @@ export class ArticlesController {
   @UseGuards(JwtOptionalAuthGuard)
   async findAll(
     @Query('category', new DefaultValuePipe(0), ParseIntPipe) category = 0,
-    @Query('tags', new ParseArrayPipe({ items: Number, optional: true })) tags = [0],
+    @Query('tags', new ParseArrayPipe({ items: Number, optional: true })) tags = [],
     @Query('page', new DefaultValuePipe(ARTICLE_CONFIGS.DEFAULT_PAGE), ParseIntPipe)
     page = ARTICLE_CONFIGS.DEFAULT_PAGE,
     @Query('limit', new DefaultValuePipe(ARTICLE_CONFIGS.MAX_ITEM_LIMIT), ParseIntPipe)
