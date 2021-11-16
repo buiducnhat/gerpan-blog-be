@@ -6,10 +6,13 @@ import { AppModule } from './modules/app/app.module';
 import { setupSwagger } from './modules/app/setup-swagger';
 import { IAppConfig } from './configs/app.config';
 import { ValidationPipe } from './pipes/validation.pipe';
+import { CustomLogger } from './modules/app/setup-logger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  const logger = new Logger();
+  const app = await NestFactory.create(AppModule, {
+    logger: CustomLogger,
+  });
+  const logger = app.get(Logger);
   const configService: ConfigService<IAppConfig> = app.get(ConfigService);
 
   app.enableCors();
