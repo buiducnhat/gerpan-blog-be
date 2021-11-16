@@ -7,7 +7,7 @@ source ~/.profile
 
 # Pull necessary files for preventing errors
 git stash
-git pull origin circleci
+git pull origin main
 
 # Install dependencies
 yarn install
