@@ -44,7 +44,7 @@ export const removeVietnameseAccent = (char: string): string => {
  * @param postfix string?: optional postfix after slug (example id)
  * @returns string: slug
  */
-export const slugify = (char: string, postfix = ''): string => {
+export const slugify = (char: string, postfix: string | number): string => {
   char = removeVietnameseAccent(char);
   char = char.replace(/^\s+|\s+$/g, ''); // trim
   char = char

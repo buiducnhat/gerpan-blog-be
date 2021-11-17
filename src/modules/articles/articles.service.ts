@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { CreateArticleDto } from './dto/article-create.dto';
 import { UpdateArticleDto } from './dto/article-update.dto';
 import { Article } from './entities/article.entity';
-import { convertDTO } from '@src/utils/common.util';
+import { convertDTO, slugify } from '@src/utils/common.util';
 import { ARTICLE_MESSAGES } from './common/articles.constant';
 import { ArticleTag } from '@modules/article-tags/entities/article-tag.entity';
 import { ArticleCategory } from '@modules/article-categories/entities/article-category.entity';
@@ -42,7 +42,9 @@ export class ArticlesService {
     // Insert article tags
     newArticle.tags = await this.articleTagRepository.findByIds(createArticleDto.tags);
 
-    return this.articleRepository.save(newArticle);
+    const article = await this.articleRepository.save(newArticle);
+    article.slug = slugify(article.title, article.id);
+    return article;
   }
 
   async findAll(
@@ -91,7 +93,12 @@ export class ArticlesService {
       query.andWhere('tag.id IN (:tagIds)', { tagIds: params.tags });
     }
 
-    const [articles, total] = await query.getManyAndCount();
+    const result = await query.getManyAndCount();
+    const total = result[1];
+    const articles = result[0].map((article) => ({
+      ...article,
+      slug: slugify(article.title, article.id),
+    }));
 
     return this.paginationService.paginate(params, articles, total);
   }
@@ -129,13 +136,14 @@ export class ArticlesService {
       query.andWhere('article.published = true');
     }
     const article = await query.getOne();
+    article.slug = slugify(article.title, article.id);
 
     if (!article) throw new NotFoundException(ARTICLE_MESSAGES.NOT_FOUND);
     return article;
   }
 
   async update(id: number, updateArticleDto: UpdateArticleDto) {
-    const article = await this.articleRepository.findOne(id);
+    let article = await this.articleRepository.findOne(id);
     if (!article) throw new NotFoundException(ARTICLE_MESSAGES.NOT_FOUND);
     convertDTO(updateArticleDto, article);
 
@@ -148,7 +156,9 @@ export class ArticlesService {
     // Reinsert article tags
     article.tags = await this.articleTagRepository.findByIds(updateArticleDto.tags);
 
-    return this.articleRepository.save(article);
+    article = await this.articleRepository.save(article);
+    article.slug = slugify(article.title, article.id);
+    return article;
   }
 
   async changePublished(id: number, published = false) {
