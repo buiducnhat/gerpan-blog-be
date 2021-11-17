@@ -136,9 +136,9 @@ export class ArticlesService {
       query.andWhere('article.published = true');
     }
     const article = await query.getOne();
-    article.slug = slugify(article.title, article.id);
-
     if (!article) throw new NotFoundException(ARTICLE_MESSAGES.NOT_FOUND);
+
+    article.slug = slugify(article.title, article.id);
     return article;
   }
 
