@@ -1,6 +1,7 @@
 import { NestFactory, NestApplication } from '@nestjs/core';
 import { Logger, RequestMethod } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import * as helmet from 'helmet';
 
 import { AppModule } from './modules/app/app.module';
 import { setupSwagger } from './modules/app/setup-swagger';
@@ -16,6 +17,7 @@ async function bootstrap() {
   const configService: ConfigService<IAppConfig> = app.get(ConfigService);
 
   app.enableCors();
+  app.use(helmet());
   app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix(configService.get('apiPrefix'), {
     exclude: [
