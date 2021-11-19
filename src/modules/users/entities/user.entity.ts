@@ -33,6 +33,9 @@ export class User {
   @Column({ length: 15, nullable: true })
   phone: string;
 
+  @Column({ length: 500, nullable: true })
+  bio: string;
+
   @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
   role: UserRole;
 

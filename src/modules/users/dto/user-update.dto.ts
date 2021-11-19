@@ -13,6 +13,11 @@ export class UpdateUserDto {
   @IsString()
   @MaxLength(15)
   phone?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  bio?: string;
 }
 
 export class UpdateUserAvatarDto {
