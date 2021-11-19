@@ -16,7 +16,7 @@ async function bootstrap() {
   const logger = app.get(Logger);
   const configService: ConfigService<IAppConfig> = app.get(ConfigService);
 
-  app.enableCors({ origin: /\.vercel\.app$/ });
+  app.enableCors({ origin: 'https://gerpan.vercel.app' });
   app.use(helmet());
   app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix(configService.get('apiPrefix'), {
