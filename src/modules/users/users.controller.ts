@@ -1,4 +1,4 @@
-import { Body, Controller, Put, UseGuards, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Put, UseGuards, ValidationPipe } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { UsersService } from './users.service';
@@ -17,6 +17,13 @@ import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @Get('/admin')
+  @ApiOperation({ summary: 'Get admin profile' })
+  @ApiOkResponse({ type: UserInfoDto, description: USER_MESSAGES.SUCCESS })
+  async getAdmin() {
+    return this.usersService.getAdminProfile();
+  }
 
   @Put()
   @ApiOperation({ summary: 'Update basic user profile' })

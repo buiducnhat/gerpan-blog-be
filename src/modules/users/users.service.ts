@@ -8,6 +8,7 @@ import { UpdateUserDto } from './dto/user-update.dto';
 import { Social } from './entities/social.entity';
 import { User } from './entities/user.entity';
 import { SocialProvider } from './enums/social-provider.enum';
+import { UserRole } from './enums/role.enum';
 
 @Injectable()
 export class UsersService {
@@ -88,5 +89,14 @@ export class UsersService {
 
   findSocialUser(socialId: string, provider: SocialProvider) {
     return this.socialRepository.findOne({ socialId, provider }, { relations: ['user'] });
+  }
+
+  getAdminProfile() {
+    return this.userRepository
+      .createQueryBuilder('user')
+      .select('user')
+      .leftJoinAndSelect('user.socials', 'social')
+      .where('user.role = :role', { role: UserRole.ADMIN })
+      .getOne();
   }
 }
