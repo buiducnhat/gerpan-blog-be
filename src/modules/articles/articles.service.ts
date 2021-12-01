@@ -134,6 +134,7 @@ export class ArticlesService {
       .leftJoin('comment.parent', 'commentParent')
       .leftJoin('comment.children', 'commentChildren')
       .where('article.id = :id', { id });
+
     if (onlyPublished) {
       query.andWhere('article.published = true');
     }
@@ -142,6 +143,47 @@ export class ArticlesService {
 
     article.slug = slugify(article.title, article.id);
     return article;
+  }
+
+  async findRelateds(articleId: number): Promise<Article[]> {
+    const article = await this.findOne(articleId);
+    const authorId = article.author.id;
+
+    const articles = await this.articleRepository
+      .createQueryBuilder('article')
+      .select([
+        'article',
+        'author.id',
+        'author.firstName',
+        'author.lastName',
+        'author.avatar',
+        'author.lastLogin',
+        'category',
+        'tag',
+        'comment',
+        'commentUser.id',
+        'commentUser.firstName',
+        'commentUser.lastName',
+        'commentUser.avatar',
+        'commentUser.lastLogin',
+        'commentParent',
+        'commentChildren',
+      ])
+      .leftJoin('article.category', 'category')
+      .leftJoin('article.tags', 'tag')
+      .leftJoin('article.comments', 'comment')
+      .leftJoin('article.author', 'author')
+      .leftJoin('comment.user', 'commentUser')
+      .leftJoin('comment.parent', 'commentParent')
+      .leftJoin('comment.children', 'commentChildren')
+      .where('author.id = :authorId', { authorId })
+      .andWhere('article.id != :articleId', { articleId })
+      .andWhere('article.published = true')
+      .take(3)
+      .orderBy('article.createdAt', 'DESC')
+      .getMany();
+
+    return articles;
   }
 
   async update(id: number, updateArticleDto: UpdateArticleDto) {

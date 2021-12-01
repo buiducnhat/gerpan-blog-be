@@ -107,6 +107,16 @@ export class ArticlesController {
     return this.articlesService.findOne(id, !isAdmin);
   }
 
+  @Get(':id/related')
+  @ApiOperation({ summary: 'Get related articles' })
+  @ApiOkResponse({
+    description: ARTICLE_MESSAGES.SUCCESS,
+    type: DetailArticleDto,
+  })
+  findRelateds(@Param('id', ParseIntPipe) id: number) {
+    return this.articlesService.findRelateds(id);
+  }
+
   @Put(':id')
   @ApiOperation({
     summary: 'Update an article',
