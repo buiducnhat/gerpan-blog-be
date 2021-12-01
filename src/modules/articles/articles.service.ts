@@ -80,9 +80,11 @@ export class ArticlesService {
       .leftJoin('comment.children', 'commentChildren')
       .take(params.limit)
       .skip((params.page - 1) * params.limit)
-      .where('article.published = :onlyPublished', { onlyPublished })
       .orderBy('article.createdAt', 'DESC');
 
+    if (onlyPublished) {
+      query.andWhere('article.published = true');
+    }
     if (params.search) {
       query.andWhere('article.title LIKE :search', { search: `%${params.search}%` });
     }

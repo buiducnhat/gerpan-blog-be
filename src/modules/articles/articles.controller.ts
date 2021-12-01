@@ -73,7 +73,7 @@ export class ArticlesController {
   @ApiOperation({
     summary: 'Get all articles',
     description:
-      `Return only published articles for user and all article for admin. ` +
+      `Return only published articles for user and all article for admin.` +
       `Limit is ${ARTICLE_CONFIGS.MAX_ITEM_LIMIT} items`,
   })
   @MyApiPaginatedResponse(BasicArticleDto, { description: ARTICLE_MESSAGES.SUCCESS })
