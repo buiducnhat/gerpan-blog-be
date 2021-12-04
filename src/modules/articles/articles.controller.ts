@@ -113,6 +113,8 @@ export class ArticlesController {
     description: ARTICLE_MESSAGES.SUCCESS,
     type: DetailArticleDto,
   })
+  @MyApiNotFoundResponse()
+  @UseGuards(JwtOptionalAuthGuard)
   findRelateds(@Param('id', ParseIntPipe) id: number) {
     return this.articlesService.findRelateds(id);
   }

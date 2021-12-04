@@ -145,8 +145,8 @@ export class ArticlesService {
     return article;
   }
 
-  async findRelateds(articleId: number): Promise<Article[]> {
-    const article = await this.findOne(articleId);
+  async findRelateds(articleId: number, onlyPublished = true): Promise<Article[]> {
+    const article = await this.findOne(articleId, onlyPublished);
     const authorId = article.author.id;
 
     const articles = await this.articleRepository
