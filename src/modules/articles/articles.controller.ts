@@ -115,8 +115,11 @@ export class ArticlesController {
   })
   @MyApiNotFoundResponse()
   @UseGuards(JwtOptionalAuthGuard)
-  findRelateds(@Param('id', ParseIntPipe) id: number) {
-    return this.articlesService.findRelateds(id);
+  findRelateds(
+    @Param('id', ParseIntPipe) id: number,
+    @IsInRoles([UserRole.ADMIN]) isAdmin: boolean,
+  ) {
+    return this.articlesService.findRelateds(id, !isAdmin);
   }
 
   @Put(':id')
